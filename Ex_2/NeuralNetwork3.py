@@ -1,12 +1,12 @@
 import csv
 import numpy as np
 import math
-
 import GeneratePoints
 
 
 class SelfOrganizingMap(object):
     def __init__(self, x, y, input_data_file):
+        self.lamda = 1
         self.x = x
         self.y = y
         self.shape = (x, y)
@@ -16,6 +16,8 @@ class SelfOrganizingMap(object):
         self.distance = []
         self.minDistanceX = -1
         self.minDistanceY = -1
+        self.neighborhood = []
+        self.winnerDistance = []
 
     def initialze_weights(self):
         self.neuron_weights = 2 * np.random.random((self.x, self.y, len(self.input_data[0]))) - 1
@@ -34,11 +36,12 @@ class SelfOrganizingMap(object):
     def distanceFun(self, x, y):
         return math.sqrt(math.fabs((x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2))
 
-    def calculateDistance(self, inp):
-        for i in range(len(self.neuron_weights)):
-            self.distance.append([])
-            for j in self.neuron_weights[i]:
-                self.distance[i].append(self.distanceFun(j, inp))
+    def calculateDistance(self, inp, forCalculate, distanseResult):
+        for i in range(len(forCalculate)):
+            distanseResult.append([])
+            for j in forCalculate[i]:
+                distanseResult[i].append(self.distanceFun(j, inp))
+        return distanseResult
 
     def findMinDistance(self):
         minV = self.distance[0][0]
@@ -51,14 +54,33 @@ class SelfOrganizingMap(object):
                 self.minDistanceY = i.index(minV)
 
 
+    def gaussianFun(self, i, j):
+        print(math.exp(-1 * (self.winnerDistance[i][j] ** 2) / (2 * self.lamda ** 2)))
+        return math.exp(-1 * (self.winnerDistance[i][j] ** 2) / (2 * self.lamda ** 2))
+
+    def gaussianNeighborhood(self):
+        for i in range(len(self.winnerDistance)):
+            self.neighborhood.append([])
+            for j in range (len(self.winnerDistance[i])):
+                self.neighborhood[i].append(self.gaussianFun(i, j))
+
+    def clearLists(self):
+        self.distance.clear()
+        self.neighborhood.clear()
+
+
+
     def train(self, epoch_number):
         combined_data = list(self.input_data)
         for epoch in range(epoch_number):
             np.random.shuffle(combined_data)
             for inp in combined_data:
-                self.calculateDistance(inp)
+                self.calculateDistance(inp, self.neuron_weights, self.distance)
                 self.findMinDistance()
-                self.distance.clear()
+                self.calculateDistance(self.neuron_weights[self.minDistanceX][self.minDistanceY], self.neuron_weights, self.winnerDistance)
+                self.gaussianNeighborhood()
+                self.clearLists()
+
 
 
 # GeneratePoints.findPoints()
