@@ -1,6 +1,8 @@
 import csv
 import numpy as np
 import math
+import matplotlib.pyplot as plt
+
 import GeneratePoints
 
 
@@ -19,6 +21,7 @@ class SelfOrganizingMap(object):
         self.minDistanceY = -1
         self.neighborhood = []
         self.winnerDistance = []
+        self.testData = self.file_input("testData.txt")
 
     def initialze_weights(self):
         self.neuron_weights = 2 * np.random.random((self.x, self.y, len(self.input_data[0]))) - 1
@@ -42,7 +45,6 @@ class SelfOrganizingMap(object):
             distanseResult.append([])
             for j in forCalculate[i]:
                 distanseResult[i].append(self.distanceFun(j, inp))
-        return distanseResult
 
     def findMinDistance(self):
         minV = self.distance[0][0]
@@ -54,25 +56,25 @@ class SelfOrganizingMap(object):
                 self.minDistanceX = self.distance.index(i)
                 self.minDistanceY = i.index(minV)
 
-
     def gaussianFun(self, i, j):
         return math.exp(-1 * (self.winnerDistance[i][j] ** 2) / (2 * self.lamda ** 2))
 
     def gaussianNeighborhood(self):
         for i in range(len(self.winnerDistance)):
             self.neighborhood.append([])
-            for j in range (len(self.winnerDistance[i])):
+            for j in range(len(self.winnerDistance[i])):
                 self.neighborhood[i].append(self.gaussianFun(i, j))
 
     def clearLists(self):
         self.distance.clear()
         self.neighborhood.clear()
+        self.winnerDistance.clear()
 
     def updateWeights(self, inp):
         for i in range(len(self.neuron_weights)):
             for j in range(len(self.neuron_weights[i])):
-                self.neuron_weights[i][j] = self.neuron_weights[i][j] + self.neighborhood[i][j] * self.alpha * (inp - self.neuron_weights[i][j])
-
+                self.neuron_weights[i][j] = self.neuron_weights[i][j] + self.neighborhood[i][j] * self.alpha * (
+                            inp - self.neuron_weights[i][j])
 
     def train(self, epoch_number):
         combined_data = list(self.input_data)
@@ -81,13 +83,16 @@ class SelfOrganizingMap(object):
             for inp in combined_data:
                 self.calculateDistance(inp, self.neuron_weights, self.distance)
                 self.findMinDistance()
-                self.calculateDistance(self.neuron_weights[self.minDistanceX][self.minDistanceY], self.neuron_weights, self.winnerDistance)
+                self.calculateDistance(self.neuron_weights[self.minDistanceX][self.minDistanceY], self.neuron_weights,
+                                       self.winnerDistance)
                 self.gaussianNeighborhood()
                 self.updateWeights(inp)
                 self.clearLists()
-
+            if epoch == 8:
+                print("")
 
 
 # GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(3, 4, "RandomPoints.txt")
-SOM.train(7)
+# SOM = SelfOrganizingMap(3, 4, "RandomPoints.txt")
+SOM = SelfOrganizingMap(3, 4, "testData.txt")
+SOM.train(10)
