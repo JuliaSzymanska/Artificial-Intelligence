@@ -14,6 +14,8 @@ class SelfOrganizingMap(object):
         self.neuron_weights = []
         self.initialze_weights()
         self.distance = []
+        self.minDistanceX = -1
+        self.minDistanceY = -1
 
     def initialze_weights(self):
         self.neuron_weights = 2 * np.random.random((self.x, self.y, len(self.input_data[0]))) - 1
@@ -30,7 +32,7 @@ class SelfOrganizingMap(object):
         return np.asarray(input_arr)
 
     def distanceFun(self, x, y):
-        return math.sqrt(math.fabs(x[0] * y[0]) + (x[1] + y[1]))
+        return math.sqrt(math.fabs((x[0] * y[0]) + (x[1] + y[1])))
 
     def calculateDistance(self, inp):
         for i in range(len(self.neuron_weights)):
@@ -38,13 +40,25 @@ class SelfOrganizingMap(object):
             for j in self.neuron_weights[i]:
                 self.distance[i].append(self.distanceFun(j, inp))
 
+    def findMinDistance(self):
+        minV = self.distance[0][0]
+        self.minDistanceX = 0
+        self.minDistanceY = 0
+        for i in self.distance:
+            if minV > min(i):
+                minV = min(i)
+                self.minDistanceX = self.distance.index(i)
+                self.minDistanceY = i.index(minV)
+
+
     def train(self, epoch_number):
         combined_data = list(self.input_data)
         for epoch in range(epoch_number):
             np.random.shuffle(combined_data)
             for inp in combined_data:
                 self.calculateDistance(inp)
-                self.distance = []
+                self.findMinDistance()
+                self.distance.clear()
 
 
 # GeneratePoints.findPoints()
