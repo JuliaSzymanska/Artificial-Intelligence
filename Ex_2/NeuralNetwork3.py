@@ -7,6 +7,7 @@ import GeneratePoints
 class SelfOrganizingMap(object):
     def __init__(self, x, y, input_data_file):
         self.lamda = 1
+        self.alpha = 0.5
         self.x = x
         self.y = y
         self.shape = (x, y)
@@ -55,7 +56,6 @@ class SelfOrganizingMap(object):
 
 
     def gaussianFun(self, i, j):
-        print(math.exp(-1 * (self.winnerDistance[i][j] ** 2) / (2 * self.lamda ** 2)))
         return math.exp(-1 * (self.winnerDistance[i][j] ** 2) / (2 * self.lamda ** 2))
 
     def gaussianNeighborhood(self):
@@ -68,6 +68,10 @@ class SelfOrganizingMap(object):
         self.distance.clear()
         self.neighborhood.clear()
 
+    def updateWeights(self, inp):
+        for i in range(len(self.neuron_weights)):
+            for j in range(len(self.neuron_weights[i])):
+                self.neuron_weights[i][j] = self.neuron_weights[i][j] + self.neighborhood[i][j] * self.alpha * (inp - self.neuron_weights[i][j])
 
 
     def train(self, epoch_number):
@@ -79,10 +83,11 @@ class SelfOrganizingMap(object):
                 self.findMinDistance()
                 self.calculateDistance(self.neuron_weights[self.minDistanceX][self.minDistanceY], self.neuron_weights, self.winnerDistance)
                 self.gaussianNeighborhood()
+                self.updateWeights(inp)
                 self.clearLists()
 
 
 
 # GeneratePoints.findPoints()
 SOM = SelfOrganizingMap(3, 4, "RandomPoints.txt")
-SOM.train(2)
+SOM.train(7)
