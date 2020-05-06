@@ -32,7 +32,7 @@ class SelfOrganizingMap(object):
         return np.asarray(input_arr)
 
     def distanceFun(self, x, y):
-        return math.sqrt(math.fabs((x[0] * y[0]) + (x[1] + y[1])))
+        return math.sqrt(math.fabs((x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2))
 
     def calculateDistance(self, inp):
         for i in range(len(self.neuron_weights)):
