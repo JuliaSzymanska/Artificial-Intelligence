@@ -1,6 +1,7 @@
 from shapely.geometry import Polygon, Point
 import random
 
+
 def generator(poly, numberOfRandomPoints):
     minx, miny, maxx, maxy = poly.bounds
     listOfPoints = []
@@ -12,6 +13,7 @@ def generator(poly, numberOfRandomPoints):
                 listOfPoints.append(p)
                 break
     return listOfPoints
+
 
 def findPoints():
     numberOfPoints = int(input("Ile punktow bedzie posiadac figura? "))
