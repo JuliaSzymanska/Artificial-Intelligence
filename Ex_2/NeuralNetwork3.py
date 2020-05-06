@@ -32,15 +32,18 @@ class SelfOrganizingMap(object):
     def distanceFun(self, x, y):
         return math.sqrt(math.fabs(x[0] * y[0]) + (x[1] + y[1]))
 
+    def calculateDistance(self, inp):
+        for i in range(len(self.neuron_weights)):
+            self.distance.append([])
+            for j in self.neuron_weights[i]:
+                self.distance[i].append(self.distanceFun(j, inp))
+
     def train(self, epoch_number):
         combined_data = list(self.input_data)
         for epoch in range(epoch_number):
             np.random.shuffle(combined_data)
             for inp in combined_data:
-                for i in range(len(self.neuron_weights)):
-                    self.distance.append([])
-                    for j in self.neuron_weights[i]:
-                        self.distance[i].append(self.distanceFun(j, inp))
+                self.calculateDistance(inp)
                 self.distance = []
 
 
