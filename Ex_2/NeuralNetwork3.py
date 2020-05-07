@@ -8,7 +8,7 @@ import GeneratePoints
 
 class SelfOrganizingMap(object):
     def __init__(self, x, y, input_data_file):
-        self.lamda = 1
+        self.lamda = 0.3
         self.alpha = 0.5
         self.x = x
         self.y = y
@@ -22,7 +22,7 @@ class SelfOrganizingMap(object):
         self.neighborhood = []
         self.winnerDistance = []
         self.testData = self.file_input("testData.txt")
-
+        self.error = []
 
     def file_input(self, file_name):
         input_arr = []
@@ -75,7 +75,7 @@ class SelfOrganizingMap(object):
                         inp - self.neuron_weights[i][j])
 
     def train(self, epoch_number):
-        self.plot()
+        self.plot("Befor")
         combined_data = list(self.input_data)
         for epoch in range(epoch_number):
             print(epoch)
@@ -87,10 +87,11 @@ class SelfOrganizingMap(object):
                                        self.winnerDistance)
                 self.gaussianNeighborhood()
                 self.updateWeights(inp)
+                self.error.append(self.distance[self.minDistanceX][self.minDistanceY] / len(self.input_data[0]))
                 self.clearLists()
-        self.plot()
+        self.plot("After")
 
-    def plot(self):
+    def plot(self, title):
         inputX = []
         inputY = []
         for i in self.input_data:
@@ -104,8 +105,15 @@ class SelfOrganizingMap(object):
                 weightsX.append(j[0])
                 weightsY.append(j[1])
         plt.plot(weightsX, weightsY, 'bo', color='red')
-        plt.title("Results: ")
+        plt.title(title)
         plt.show()
+
+    # def plotForError(self):
+    #     plt.plot(self.error, self.number, 'ro', markersize=1)
+    #     plt.title("Blad kwantyzacji")
+    #     plt.xlabel(x_label)
+    #     plt.ylabel(y_label)
+    #     plt.show()
 
 
 # GeneratePoints.findPoints()
