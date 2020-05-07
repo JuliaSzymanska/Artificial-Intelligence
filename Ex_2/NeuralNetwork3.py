@@ -14,8 +14,8 @@ class SelfOrganizingMap(object):
         self.y = y
         self.shape = (x, y)
         self.input_data = self.file_input(input_data_file)
-        self.neuron_weights = []
-        self.initialze_weights()
+        self.neuron_weights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
+                                               size=(self.x, self.y, len(self.input_data[0])))
         self.distance = []
         self.minDistanceX = -1
         self.minDistanceY = -1
@@ -23,8 +23,6 @@ class SelfOrganizingMap(object):
         self.winnerDistance = []
         self.testData = self.file_input("testData.txt")
 
-    def initialze_weights(self):
-        self.neuron_weights = 2 * np.random.random((self.x, self.y, len(self.input_data[0]))) - 1
 
     def file_input(self, file_name):
         input_arr = []
@@ -74,11 +72,13 @@ class SelfOrganizingMap(object):
         for i in range(len(self.neuron_weights)):
             for j in range(len(self.neuron_weights[i])):
                 self.neuron_weights[i][j] = self.neuron_weights[i][j] + self.neighborhood[i][j] * self.alpha * (
-                            inp - self.neuron_weights[i][j])
+                        inp - self.neuron_weights[i][j])
 
     def train(self, epoch_number):
+        self.plot()
         combined_data = list(self.input_data)
         for epoch in range(epoch_number):
+            print(epoch)
             np.random.shuffle(combined_data)
             for inp in combined_data:
                 self.calculateDistance(inp, self.neuron_weights, self.distance)
@@ -88,11 +88,27 @@ class SelfOrganizingMap(object):
                 self.gaussianNeighborhood()
                 self.updateWeights(inp)
                 self.clearLists()
-            if epoch == 8:
-                print("")
+        self.plot()
+
+    def plot(self):
+        inputX = []
+        inputY = []
+        for i in self.input_data:
+            inputX.append(i[0])
+            inputY.append(i[1])
+        plt.plot(inputX, inputY, 'bo')
+        weightsX = []
+        weightsY = []
+        for i in self.neuron_weights:
+            for j in i:
+                weightsX.append(j[0])
+                weightsY.append(j[1])
+        plt.plot(weightsX, weightsY, 'bo', color='red')
+        plt.title("Results: ")
+        plt.show()
 
 
 # GeneratePoints.findPoints()
 # SOM = SelfOrganizingMap(3, 4, "RandomPoints.txt")
-SOM = SelfOrganizingMap(3, 4, "testData.txt")
-SOM.train(10)
+SOM = SelfOrganizingMap(10, 10, "testData.txt")
+SOM.train(1)
