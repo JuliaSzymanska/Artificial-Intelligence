@@ -12,13 +12,12 @@ class SelfOrganizingMap(object):
         self.alpha = 0.5
         self.x = x
         self.y = y
-        self.shape = (x, y)
+        self.numberOfNeurons = x * y
         self.input_data = self.file_input(input_data_file)
         self.neuron_weights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
-                                               size=(self.x, self.y, len(self.input_data[0])))
+                                               size=(self.numberOfNeurons, len(self.input_data[0])))
         self.distance = []
-        self.minDistanceX = -1
-        self.minDistanceY = -1
+        self.minDistance = -1
         self.neighborhood = []
         self.winnerDistance = []
         self.testData = self.file_input("testData.txt")
@@ -36,32 +35,19 @@ class SelfOrganizingMap(object):
         return np.asarray(input_arr)
 
     def distanceFun(self, x, y):
-        return math.sqrt(math.fabs((x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2))
+        return
 
     def calculateDistance(self, inp, forCalculate, distanseResult):
-        for i in range(len(forCalculate)):
-            distanseResult.append([])
-            for j in forCalculate[i]:
-                distanseResult[i].append(self.distanceFun(j, inp))
+        for i in forCalculate:
+            distanseResult.append(math.sqrt(math.fabs((i[0] - inp[0]) ** 2
+                                                      + (i[1] - inp[1]) ** 2)))
 
     def findMinDistance(self):
-        minV = self.distance[0][0]
-        self.minDistanceX = 0
-        self.minDistanceY = 0
-        for i in self.distance:
-            if minV > min(i):
-                minV = min(i)
-                self.minDistanceX = self.distance.index(i)
-                self.minDistanceY = i.index(minV)
-
-    def gaussianFun(self, i, j):
-        return math.exp(-1 * (self.winnerDistance[i][j] ** 2) / (2 * self.lamda ** 2))
+        self.minDistance = self.distance.index(min(self.distance))
 
     def gaussianNeighborhood(self):
-        for i in range(len(self.winnerDistance)):
-            self.neighborhood.append([])
-            for j in range(len(self.winnerDistance[i])):
-                self.neighborhood[i].append(self.gaussianFun(i, j))
+        for i in self.winnerDistance:
+            self.neighborhood.append(math.exp(-1 * (i ** 2) / (2 * self.lamda ** 2)))
 
     def clearLists(self):
         self.distance.clear()
@@ -70,9 +56,8 @@ class SelfOrganizingMap(object):
 
     def updateWeights(self, inp):
         for i in range(len(self.neuron_weights)):
-            for j in range(len(self.neuron_weights[i])):
-                self.neuron_weights[i][j] = self.neuron_weights[i][j] + self.neighborhood[i][j] * self.alpha * (
-                        inp - self.neuron_weights[i][j])
+            self.neuron_weights[i] = self.neuron_weights[i] + self.neighborhood[i] * self.alpha * (
+                    inp - self.neuron_weights[i])
 
     def train(self, epoch_number):
         self.plot("Befor")
@@ -83,11 +68,11 @@ class SelfOrganizingMap(object):
             for inp in combined_data:
                 self.calculateDistance(inp, self.neuron_weights, self.distance)
                 self.findMinDistance()
-                self.calculateDistance(self.neuron_weights[self.minDistanceX][self.minDistanceY], self.neuron_weights,
+                self.calculateDistance(self.neuron_weights[self.minDistance], self.neuron_weights,
                                        self.winnerDistance)
                 self.gaussianNeighborhood()
                 self.updateWeights(inp)
-                self.error.append(self.distance[self.minDistanceX][self.minDistanceY] / len(self.input_data[0]))
+                self.error.append(self.distance[self.minDistance] / len(self.input_data[0]))
                 self.clearLists()
         self.plot("After")
 
@@ -101,9 +86,8 @@ class SelfOrganizingMap(object):
         weightsX = []
         weightsY = []
         for i in self.neuron_weights:
-            for j in i:
-                weightsX.append(j[0])
-                weightsY.append(j[1])
+            weightsX.append(i[0])
+            weightsY.append(i[1])
         plt.plot(weightsX, weightsY, 'bo', color='red')
         plt.title(title)
         plt.show()
