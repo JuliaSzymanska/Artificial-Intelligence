@@ -36,9 +36,6 @@ class SelfOrganizingMap(object):
                 input_arr.append(tmp_arr)
         return np.asarray(input_arr)
 
-    def distanceFun(self, x, y):
-        return
-
     def calculateDistance(self, inp, forCalculate, distanseResult):
         for i in forCalculate:
             distanseResult.append(math.sqrt(math.fabs((i[0] - inp[0]) ** 2
