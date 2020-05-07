@@ -36,9 +36,6 @@ class SelfOrganizingMap(object):
                 input_arr.append(tmp_arr)
         return np.asarray(input_arr)
 
-    def distanceFun(self, x, y):
-        return
-
     def calculateDistance(self, inp, forCalculate, distanseResult):
         for i in forCalculate:
             distanseResult.append(math.sqrt(math.fabs((i[0] - inp[0]) ** 2
@@ -72,7 +69,7 @@ class SelfOrganizingMap(object):
         self.distance, self.neuron_weights = (list(t) for t in zip(*sorted(zip(self.distance, self.neuron_weights))))
 
     def gasNeighborhood(self):
-        for i in range (len(self.neuron_weights)):
+        for i in range(len(self.neuron_weights)):
             self.neighborhood.append(math.exp(-i / self.lamda))
 
     def train(self, epoch_number):

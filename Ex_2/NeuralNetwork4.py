@@ -5,29 +5,18 @@ import matplotlib.pyplot as plt
 
 import GeneratePoints
 
-np.random.seed(20)
+
+# np.random.seed(20)
+
 
 class SelfOrganizingMap(object):
-    def __init__(self, k, input_data_file, type):
+    def __init__(self, k, input_data_file):
         self.k = k
-        self.centroids_weights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
-                                                  size=(self.k, len(self.input_data[0])))
-
-        # self.lamda = 0.3
-        # self.alpha = 0.5
-        # self.pMin = 0.75
-        # # 0 for Kohenen, 1 for neural gas
-        # self.typeOfAlgorithm = type
-        #
-        # self.input_data = self.file_input(input_data_file)
-        #
-        # self.distance = []
-        # self.winner = -1
-        # self.neighborhood = []
-        # self.winnerDistance = []
-        # self.testData = self.file_input("testData.txt")
-        # self.error = []
-        # self.potential = np.zeros(self.numberOfNeurons)
+        self.input_data = self.file_input(input_data_file)
+        self.centroidsWeights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
+                                                 size=(self.k, len(self.input_data[0])))
+        self.distance = []
+        self.winner = []
 
     def file_input(self, file_name):
         input_arr = []
@@ -44,74 +33,56 @@ class SelfOrganizingMap(object):
         for i in forCalculate:
             distanseResult.append(math.sqrt(math.fabs((i[0] - inp[0]) ** 2
                                                       + (i[1] - inp[1]) ** 2)))
-    #
-    # def findWinner(self):
-    #     self.winner = self.distance.index(min(self.distance))
-    #
-    # def kohenenNeighborhood(self):
-    #     for i in self.winnerDistance:
-    #         self.neighborhood.append(math.exp(-1 * (i ** 2) / (2 * self.lamda ** 2)))
-    #
-    # def clearLists(self):
-    #     self.distance.clear()
-    #     self.neighborhood.clear()
-    #     self.winnerDistance.clear()
-    #
-    # def updateWeights(self, inp):
-    #     for i in range(len(self.neuron_weights)):
-    #         self.neuron_weights[i] = self.neuron_weights[i] + self.neighborhood[i] * self.alpha * (
-    #                 inp - self.neuron_weights[i])
 
-    # def deadNeurons(self):
-    #     for i in self.numberOfNeurons:
-    #         if i == self.winner:
-    #             self.potential[i] = self.potential[i] - self.pMin
-    #         else:
-    #             self.potential[i] = self.potential[i] + (1/self.numberOfNeurons)
-    #
-    # def sortNeurons(self):
-    #     self.distance, self.neuron_weights = (list(t) for t in zip(*sorted(zip(self.distance, self.neuron_weights))))
-    #
-    # def gasNeighborhood(self):
-    #     for i in range (len(self.neuron_weights)):
-    #         self.neighborhood.append(math.exp(-i / self.lamda))
+    def findWinner(self):
+        self.winner.append(self.distance.index(min(self.distance)))
+
+    def updateWeights(self):
+        avgX = 0
+        avgY = 0
+        counter = 0
+        for i in range(len(self.centroidsWeights)):
+            for j in range(len(self.winner)):
+                if i == self.winner[j]:
+                    avgX += self.input_data[j][0]
+                    avgY += self.input_data[j][1]
+                    counter += 1
+            if counter != 0:
+                self.centroidsWeights[i][0] = avgX / counter
+                self.centroidsWeights[i][1] = avgY / counter
+            avgX = 0
+            avgY = 0
+            counter = 0
 
     def train(self, epoch_number):
-        # self.plot("Befor")
+        self.plot("Befor")
         combined_data = list(self.input_data)
         for epoch in range(epoch_number):
-        #     print(epoch)
+            print(epoch)
             np.random.shuffle(combined_data)
             for inp in combined_data:
-                self.calculateDistance(inp, self.neuron_weights, self.distance)
-        #         self.findWinner()
-        #         if self.typeOfAlgorithm == 0:
-        #             self.calculateDistance(self.neuron_weights[self.winner], self.neuron_weights,
-        #                                    self.winnerDistance)
-        #             self.kohenenNeighborhood()
-        #         else:
-        #             self.sortNeurons()
-        #             self.gasNeighborhood()
-        #         self.updateWeights(inp)
-        #         self.error.append(self.distance[self.winner] / len(self.input_data[0]))
-        #         self.clearLists()
-        # self.plot("After")
+                self.calculateDistance(inp, self.centroidsWeights, self.distance)
+                self.findWinner()
+                self.distance.clear()
+            self.updateWeights()
+            self.plot(epoch)
+            self.winner.clear()
 
     def plot(self, title):
-        # inputX = []
-        # inputY = []
-        # for i in self.input_data:
-        #     inputX.append(i[0])
-        #     inputY.append(i[1])
-        # plt.plot(inputX, inputY, 'bo')
-        # weightsX = []
-        # weightsY = []
-        # for i in self.neuron_weights:
-        #     weightsX.append(i[0])
-        #     weightsY.append(i[1])
-        # plt.plot(weightsX, weightsY, 'bo', color='red')
-        # plt.title(title)
-        # plt.show()
+        inputX = []
+        inputY = []
+        for i in self.input_data:
+            inputX.append(i[0])
+            inputY.append(i[1])
+        plt.plot(inputX, inputY, 'bo')
+        weightsX = []
+        weightsY = []
+        for i in self.centroidsWeights:
+            weightsX.append(i[0])
+            weightsY.append(i[1])
+        plt.plot(weightsX, weightsY, 'bo', color='red')
+        plt.title(title)
+        plt.show()
 
     # def plotForError(self):
     #     plt.plot(self.error, self.number, 'ro', markersize=1)
@@ -122,6 +93,6 @@ class SelfOrganizingMap(object):
 
 
 GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(100, "RandomPoints.txt")
-# SOM = SelfOrganizingMap(100, "testData.txt", 1)
-SOM.train(5)
+SOM = SelfOrganizingMap(5, "RandomPoints.txt")
+# SOM = SelfOrganizingMap(5, "testData.txt")
+SOM.train(20)
