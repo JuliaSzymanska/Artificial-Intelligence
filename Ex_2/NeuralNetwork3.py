@@ -69,7 +69,7 @@ class SelfOrganizingMap(object):
         self.distance, self.neuron_weights = (list(t) for t in zip(*sorted(zip(self.distance, self.neuron_weights))))
 
     def gasNeighborhood(self):
-        for i in range (len(self.neuron_weights)):
+        for i in range(len(self.neuron_weights)):
             self.neighborhood.append(math.exp(-i / self.lamda))
 
     def train(self, epoch_number):
