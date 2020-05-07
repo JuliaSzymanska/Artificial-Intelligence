@@ -120,7 +120,7 @@ class SelfOrganizingMap(object):
     #     plt.show()
 
 
-# GeneratePoints.findPoints()
-# SOM = SelfOrganizingMap(3, 4, "RandomPoints.txt")
-SOM = SelfOrganizingMap(100, "testData.txt", 1)
-SOM.train(1)
+GeneratePoints.findPoints()
+SOM = SelfOrganizingMap(100, "RandomPoints.txt", 1)
+# SOM = SelfOrganizingMap(100, "testData.txt", 1)
+SOM.train(5)
