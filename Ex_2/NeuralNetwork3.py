@@ -2,18 +2,19 @@ import csv
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
 from scipy.spatial import distance
 import matplotlib
+
 import GeneratePoints
 
 matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
-
-# import matplotlib.pyplot as plt
-# import matplotlib.animation as animation
 
 class SelfOrganizingMap(object):
-    def __init__(self, numberOfNeurons, input_data_file, type, radius, alpha,  gaussian):
+    def __init__(self, numberOfNeurons, input_data_file, type, radius, alpha, gaussian):
         self.radius = radius
         self.maxRadius = radius
         self.minRadius = 0000.1
