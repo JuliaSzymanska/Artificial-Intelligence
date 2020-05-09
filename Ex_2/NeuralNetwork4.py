@@ -5,19 +5,29 @@ import matplotlib.pyplot as plt
 
 import GeneratePoints
 
-np.random.seed(20)
+# np.random.seed(20)
 
 
 class SelfOrganizingMap(object):
-    def __init__(self, k, input_data_file):
+    def __init__(self, k, input_data_file, epsilon, randNumber):
         self.k = k
+        self.epsilon = epsilon
         self.input_data = self.file_input(input_data_file)
-        self.centroidsWeights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
-                                                 size=(self.k, len(self.input_data[0])))
+        self.centroidsWeights = self.inizializeWeights(randNumber)
         self.distance = []
         self.winner = []
         self.combinedData = list(self.input_data)
         self.flag = True
+        self.error = []
+
+    def inizializeWeights(self, randNumber):
+        errors = []
+        weights = []
+        for i in range(randNumber):
+            weights.append(np.random.normal(np.mean(self.input_data), np.std(self.input_data),
+                                                 size=(self.k, len(self.input_data[0]))))
+            errors.append(self.calculateError(self.input_data, weights[i]))
+        return weights[errors.index(min(errors))]
 
     def file_input(self, file_name):
         input_arr = []
@@ -48,7 +58,8 @@ class SelfOrganizingMap(object):
                     avgY += self.combinedData[j][1]
                     counter += 1
             if counter != 0:
-                if avgX != 0 and avgY != 0:
+                if self.centroidsWeights[i][0] - avgX / counter > self.epsilon \
+                        and self.centroidsWeights[i][1] - avgY / counter > self.epsilon:
                     self.flag = True
                 self.centroidsWeights[i][0] = avgX / counter
                 self.centroidsWeights[i][1] = avgY / counter
@@ -56,8 +67,20 @@ class SelfOrganizingMap(object):
             avgY = 0
             counter = 0
 
+    def calculateError(self, input, weights):
+        error = 0
+        errors = []
+        errorDist = []
+        for inp in input:
+            for i in weights:
+                errorDist.append(distance.euclidean(i, inp))
+            error += min(errorDist) ** 2
+            errorDist.clear()
+        errors.append(error / len(input))
+        return errors
+
     def train(self):
-        self.plot("Befor")
+        self.plot("Before")
         counter = 0
         while self.flag:
             self.flag = False
@@ -69,7 +92,9 @@ class SelfOrganizingMap(object):
             self.updateWeights()
             self.winner.clear()
             self.plot(counter)
+            self.error = self.calculateError(self.input_data, self.centroidsWeights)
             counter += 1
+        self.plotForError(counter)
 
     def plot(self, title):
         inputX = []
@@ -87,15 +112,14 @@ class SelfOrganizingMap(object):
         plt.title(title)
         plt.show()
 
-    # def plotForError(self):
-    #     plt.plot(self.error, self.number, 'ro', markersize=1)
-    #     plt.title("Blad kwantyzacji")
-    #     plt.xlabel(x_label)
-    #     plt.ylabel(y_label)
-    #     plt.show()
+    def plotForError(self, epoch):
+        epochRange = np.arange(1, epoch + 1, 1)
+        plt.plot(epochRange, self.error, 'ro', markersize=1)
+        plt.title("Blad kwantyzacji")
+        plt.show()
 
 
 # GeneratePoints.findPoints()
-# SOM = SelfOrganizingMap(3, "test.txt")
-SOM = SelfOrganizingMap(30, "testData.txt")
+# SOM = SelfOrganizingMap(3, "test.txt", 0.1)
+SOM = SelfOrganizingMap(30, "testData.txt", 0.1, 5)
 SOM.train()

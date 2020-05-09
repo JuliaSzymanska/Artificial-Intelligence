@@ -3,11 +3,14 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
-import matplotlib.animation as animation
 from scipy.spatial import distance
 import matplotlib
-# matplotlib.use("TkAgg")
+
 import GeneratePoints
+
+matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 
 class SelfOrganizingMap(object):
@@ -36,7 +39,6 @@ class SelfOrganizingMap(object):
         self.error = []
         self.potential = np.ones(self.numberOfNeurons)
         self.activation = np.ones(self.numberOfNeurons)
-        self.animation_plots = []
 
     def file_input(self, file_name):
         input_arr = []
@@ -142,12 +144,9 @@ class SelfOrganizingMap(object):
                 self.clearLists(step)
                 step += 1
             self.calculateError()
-            print(epoch)
-            self.animation_plots.append(np.copy(self.neuron_weights))
         print(self.error)
         self.plot("After")
         self.plotForError(epoch_number + 1)
-        self.animate_plots()
 
     def plot(self, title):
         inputX = []
@@ -171,27 +170,8 @@ class SelfOrganizingMap(object):
         plt.title("Blad kwantyzacji")
         plt.show()
 
-    def animate_plots(self):
-        fig, ax = plt.subplots()
-        # tutaj kreslamy max/min dla wykresu na podstawie 1 epoki
-        ax.axis([np.min(self.animation_plots[0], axis=0)[0] - 3, np.max(self.animation_plots[0], axis=0)[0] + 3,
-                 np.min(self.animation_plots[0], axis=0)[1] - 3, np.max(self.animation_plots[0], axis=0)[1] + 3])
-        ax.plot(self.input_data[:, 0], self.input_data[:, 1], 'bo')
-        line, = ax.plot([], [], 'ro')
-
-        def animate(frame):
-            if frame > len(self.animation_plots) - 1:
-                frame = len(self.animation_plots) - 1
-            line.set_data(self.animation_plots[frame][:, 0], self.animation_plots[frame][:, 1])
-            ax.set_title("Epoch: " + str(frame))
-            return line
-
-        ani = animation.FuncAnimation(fig, animate, len(self.animation_plots), interval=1, repeat=False)
-        plt.show()
-        # ani.save("output.gif")
-
 
 # GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(20, "RandomPoints.txt", 0, 0.5, 0.5, 0)
+SOM = SelfOrganizingMap(250, "RandomPoints.txt", 0, 0.5, 0.5, 0)
 # SOM = SelfOrganizingMap(100, "testData.txt", 0, 0.5, 0.5)
 SOM.train(10)
