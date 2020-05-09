@@ -4,10 +4,11 @@ import math
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
 import matplotlib
-# import GeneratePoints
-
+import GeneratePoints
 
 matplotlib.use("TkAgg")
+
+
 # import matplotlib.pyplot as plt
 # import matplotlib.animation as animation
 
@@ -61,7 +62,7 @@ class SelfOrganizingMap(object):
         else:
             self.winner = self.distance.index(min(self.distance))
 
-    def kohenenNeighborhood(self):
+    def kohonenNeighborhood(self):
         for i in self.winnerDistance:
             self.neighborhood.append(math.exp(-1 * (i ** 2) / (2 * self.radius ** 2)))
 
@@ -70,8 +71,8 @@ class SelfOrganizingMap(object):
         self.distance.clear()
         self.neighborhood.clear()
         self.winnerDistance.clear()
-        self.radius = self.maxRadius * (self.minRadius / self.maxRadius) ** (step/self.allSteps)
-        self.alpha = self.maxAlpha * (self.minAlpha / self.maxAlpha) ** (step/self.allSteps)
+        self.radius = self.maxRadius * (self.minRadius / self.maxRadius) ** (step / self.allSteps)
+        self.alpha = self.maxAlpha * (self.minAlpha / self.maxAlpha) ** (step / self.allSteps)
 
     def updateWeights(self, inp):
         for i in range(len(self.neuron_weights)):
@@ -90,7 +91,8 @@ class SelfOrganizingMap(object):
         for i in range(len(self.potential)):
             if self.potential[i] < self.pMin:
                 self.activation[i] = 0
-
+            else:
+                self.activation[i] = 1
 
     def sortNeurons(self):
         self.distance, self.neuron_weights = (list(t) for t in zip(*sorted(zip(self.distance, self.neuron_weights))))
@@ -112,7 +114,7 @@ class SelfOrganizingMap(object):
                 if self.typeOfAlgorithm == 0:
                     self.calculateDistance(self.neuron_weights[self.winner], self.neuron_weights,
                                            self.winnerDistance)
-                    self.kohenenNeighborhood()
+                    self.kohonenNeighborhood()
                     self.deadNeurons()
                 else:
                     self.sortNeurons()
@@ -121,7 +123,7 @@ class SelfOrganizingMap(object):
                 # self.error.append(self.distance[self.winner] / len(self.input_data[0]))
                 self.clearLists(step)
                 # if step % 20 == 0:
-                    # self.plot(str(step))
+                # self.plot(str(step))
                 step += 1
 
             print(epoch)
@@ -152,6 +154,6 @@ class SelfOrganizingMap(object):
 
 
 # GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(100, "RandomPoints.txt", 0, 0.5, 0.5)
-# SOM = SelfOrganizingMap(100, "testData.txt", 0)
-SOM.train(100)
+SOM = SelfOrganizingMap(300, "RandomPoints.txt", 0, 0.5, 0.5)
+# SOM = SelfOrganizingMap(100, "testData.txt", 0, 0.5, 0.5)
+SOM.train(1)
