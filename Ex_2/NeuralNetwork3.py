@@ -2,14 +2,24 @@ import csv
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from scipy.spatial import distance
+import matplotlib
+# import GeneratePoints
 
-import GeneratePoints
 
+matplotlib.use("TkAgg")
+# import matplotlib.pyplot as plt
+# import matplotlib.animation as animation
 
 class SelfOrganizingMap(object):
-    def __init__(self, numberOfNeurons, input_data_file, type):
-        self.lamda = 0.3
-        self.alpha = 0.5
+    def __init__(self, numberOfNeurons, input_data_file, type, radius, alpha):
+        self.radius = radius
+        self.maxRadius = radius
+        self.minRadius = 0000.1
+        self.allSteps = 0
+        self.alpha = alpha
+        self.maxAlpha = alpha
+        self.minAlpha = 0000.1
         self.pMin = 0.75
         # 0 for Kohenen, 1 for neural gas
         self.typeOfAlgorithm = type
@@ -23,7 +33,8 @@ class SelfOrganizingMap(object):
         self.winnerDistance = []
         self.testData = self.file_input("testData.txt")
         self.error = []
-        self.potential = np.zeros(self.numberOfNeurons)
+        self.potential = np.ones(self.numberOfNeurons)
+        self.activation = np.ones(self.numberOfNeurons)
 
     def file_input(self, file_name):
         input_arr = []
@@ -36,47 +47,64 @@ class SelfOrganizingMap(object):
                 input_arr.append(tmp_arr)
         return np.asarray(input_arr)
 
-    def calculateDistance(self, inp, forCalculate, distanseResult):
+    def calculateDistance(self, inp, forCalculate, distanceCalculation):
         for i in forCalculate:
-            distanseResult.append(math.sqrt(math.fabs((i[0] - inp[0]) ** 2
-                                                      + (i[1] - inp[1]) ** 2)))
+            distanceCalculation.append(distance.euclidean(i, inp))
 
     def findWinner(self):
-        self.winner = self.distance.index(min(self.distance))
+        if self.typeOfAlgorithm == 0:
+            sortedDistance = np.argsort(np.asarray(self.distance))
+            for i in sortedDistance:
+                if self.activation[i] != 0:
+                    self.winner = i
+                    break
+        else:
+            self.winner = self.distance.index(min(self.distance))
 
     def kohenenNeighborhood(self):
         for i in self.winnerDistance:
-            self.neighborhood.append(math.exp(-1 * (i ** 2) / (2 * self.lamda ** 2)))
+            self.neighborhood.append(math.exp(-1 * (i ** 2) / (2 * self.radius ** 2)))
 
-    def clearLists(self):
+    def clearLists(self, step):
+        self.neuronActivation()
         self.distance.clear()
         self.neighborhood.clear()
         self.winnerDistance.clear()
+        self.radius = self.maxRadius * (self.minRadius / self.maxRadius) ** (step/self.allSteps)
+        self.alpha = self.maxAlpha * (self.minAlpha / self.maxAlpha) ** (step/self.allSteps)
 
     def updateWeights(self, inp):
         for i in range(len(self.neuron_weights)):
-            self.neuron_weights[i] = self.neuron_weights[i] + self.neighborhood[i] * self.alpha * (
-                    inp - self.neuron_weights[i])
+            if (self.activation[i] == 1 and self.typeOfAlgorithm == 0) or self.typeOfAlgorithm == 1:
+                self.neuron_weights[i] = self.neuron_weights[i] + self.neighborhood[i] * self.alpha * (
+                        inp - self.neuron_weights[i])
 
-    # def deadNeurons(self):
-    #     for i in self.numberOfNeurons:
-    #         if i == self.winner:
-    #             self.potential[i] = self.potential[i] - self.pMin
-    #         else:
-    #             self.potential[i] = self.potential[i] + (1/self.numberOfNeurons)
+    def deadNeurons(self):
+        for i in range(len(self.potential)):
+            if i == self.winner:
+                self.potential[i] = self.potential[i] - self.pMin
+            else:
+                self.potential[i] = self.potential[i] + (1 / self.numberOfNeurons)
+
+    def neuronActivation(self):
+        for i in range(len(self.potential)):
+            if self.potential[i] < self.pMin:
+                self.activation[i] = 0
+
 
     def sortNeurons(self):
         self.distance, self.neuron_weights = (list(t) for t in zip(*sorted(zip(self.distance, self.neuron_weights))))
 
     def gasNeighborhood(self):
         for i in range(len(self.neuron_weights)):
-            self.neighborhood.append(math.exp(-i / self.lamda))
+            self.neighborhood.append(math.exp(-i / self.radius))
 
     def train(self, epoch_number):
         self.plot("Befor")
+        self.allSteps = epoch_number * len(self.input_data)
         combined_data = list(self.input_data)
+        step = 0
         for epoch in range(epoch_number):
-            print(epoch)
             np.random.shuffle(combined_data)
             for inp in combined_data:
                 self.calculateDistance(inp, self.neuron_weights, self.distance)
@@ -85,12 +113,18 @@ class SelfOrganizingMap(object):
                     self.calculateDistance(self.neuron_weights[self.winner], self.neuron_weights,
                                            self.winnerDistance)
                     self.kohenenNeighborhood()
+                    self.deadNeurons()
                 else:
                     self.sortNeurons()
                     self.gasNeighborhood()
                 self.updateWeights(inp)
-                self.error.append(self.distance[self.winner] / len(self.input_data[0]))
-                self.clearLists()
+                # self.error.append(self.distance[self.winner] / len(self.input_data[0]))
+                self.clearLists(step)
+                # if step % 20 == 0:
+                    # self.plot(str(step))
+                step += 1
+
+            print(epoch)
         self.plot("After")
 
     def plot(self, title):
@@ -117,7 +151,7 @@ class SelfOrganizingMap(object):
     #     plt.show()
 
 
-GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(100, "RandomPoints.txt", 1)
-# SOM = SelfOrganizingMap(100, "testData.txt", 1)
-SOM.train(5)
+# GeneratePoints.findPoints()
+SOM = SelfOrganizingMap(100, "RandomPoints.txt", 0, 0.5, 0.5)
+# SOM = SelfOrganizingMap(100, "testData.txt", 0)
+SOM.train(100)
