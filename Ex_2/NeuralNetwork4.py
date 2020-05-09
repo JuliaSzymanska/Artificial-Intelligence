@@ -26,10 +26,7 @@ class SelfOrganizingMap(object):
         for i in range(randNumber):
             weights.append(np.random.normal(np.mean(self.input_data), np.std(self.input_data),
                                                  size=(self.k, len(self.input_data[0]))))
-            print(weights[i])
             errors.append(self.calculateError(self.input_data, weights[i]))
-        print(errors)
-        print(weights[errors.index(min(errors))])
         return weights[errors.index(min(errors))]
 
     def file_input(self, file_name):
