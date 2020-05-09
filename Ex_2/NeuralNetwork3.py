@@ -119,7 +119,6 @@ class SelfOrganizingMap(object):
                 errorDist.append(distance.euclidean(i, inp))
             error += min(errorDist) ** 2
             errorDist.clear()
-            print(inp)
         self.error.append(error / len(self.input_data))
 
     def train(self, epoch_number):
@@ -127,12 +126,10 @@ class SelfOrganizingMap(object):
         self.allSteps = epoch_number * len(self.input_data)
         combined_data = list(self.input_data)
         step = 0
-        s = 0
         self.calculateError()
         for epoch in range(epoch_number):
             np.random.shuffle(combined_data)
             for inp in combined_data:
-                print(s)
                 self.calculateDistance(inp, self.neuron_weights, self.distance)
                 self.findWinner()
                 if self.typeOfAlgorithm == 0:
@@ -143,12 +140,10 @@ class SelfOrganizingMap(object):
                 else:
                     self.sortNeurons()
                     self.gasNeighborhood()
-                s += 1
                 self.updateWeights(inp)
                 self.clearLists(step)
                 step += 1
             self.calculateError()
-            print(epoch)
         print(self.error)
         self.plot("After")
         self.plotForError(epoch_number + 1)
