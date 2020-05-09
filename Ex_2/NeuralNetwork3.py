@@ -144,7 +144,6 @@ class SelfOrganizingMap(object):
                 self.clearLists(step)
                 step += 1
             self.calculateError()
-        print(self.error)
         self.plot("After")
         self.plotForError(epoch_number + 1)
 
