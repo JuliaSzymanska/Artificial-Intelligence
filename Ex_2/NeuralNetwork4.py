@@ -5,21 +5,32 @@ import matplotlib.pyplot as plt
 
 import GeneratePoints
 
-np.random.seed(20)
+# np.random.seed(20)
 
 
 class SelfOrganizingMap(object):
-    def __init__(self, k, input_data_file, epsilon):
+    def __init__(self, k, input_data_file, epsilon, randNumber):
         self.k = k
         self.epsilon = epsilon
         self.input_data = self.file_input(input_data_file)
-        self.centroidsWeights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
-                                                 size=(self.k, len(self.input_data[0])))
+        self.centroidsWeights = self.inizializeWeights(randNumber)
         self.distance = []
         self.winner = []
         self.combinedData = list(self.input_data)
         self.flag = True
         self.error = []
+
+    def inizializeWeights(self, randNumber):
+        errors = []
+        weights = []
+        for i in range(randNumber):
+            weights.append(np.random.normal(np.mean(self.input_data), np.std(self.input_data),
+                                                 size=(self.k, len(self.input_data[0]))))
+            print(weights[i])
+            errors.append(self.calculateError(self.input_data, weights[i]))
+        print(errors)
+        print(weights[errors.index(min(errors))])
+        return weights[errors.index(min(errors))]
 
     def file_input(self, file_name):
         input_arr = []
@@ -59,15 +70,17 @@ class SelfOrganizingMap(object):
             avgY = 0
             counter = 0
 
-    def calculateError(self):
+    def calculateError(self, input, weights):
         error = 0
+        errors = []
         errorDist = []
-        for inp in self.input_data:
-            for i in self.centroidsWeights:
+        for inp in input:
+            for i in weights:
                 errorDist.append(distance.euclidean(i, inp))
             error += min(errorDist) ** 2
             errorDist.clear()
-        self.error.append(error / len(self.input_data))
+        errors.append(error / len(input))
+        return errors
 
     def train(self):
         self.plot("Before")
@@ -82,7 +95,7 @@ class SelfOrganizingMap(object):
             self.updateWeights()
             self.winner.clear()
             self.plot(counter)
-            self.calculateError()
+            self.error = self.calculateError(self.input_data, self.centroidsWeights)
             counter += 1
         self.plotForError(counter)
 
@@ -111,5 +124,5 @@ class SelfOrganizingMap(object):
 
 # GeneratePoints.findPoints()
 # SOM = SelfOrganizingMap(3, "test.txt", 0.1)
-SOM = SelfOrganizingMap(30, "testData.txt", 0.1)
+SOM = SelfOrganizingMap(30, "testData.txt", 0.1, 5)
 SOM.train()
