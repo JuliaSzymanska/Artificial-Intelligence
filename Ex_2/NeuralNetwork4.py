@@ -97,5 +97,5 @@ class SelfOrganizingMap(object):
 
 # GeneratePoints.findPoints()
 # SOM = SelfOrganizingMap(3, "test.txt")
-SOM = SelfOrganizingMap(5, "testData.txt")
+SOM = SelfOrganizingMap(30, "testData.txt")
 SOM.train()

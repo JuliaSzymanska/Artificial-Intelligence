@@ -22,6 +22,7 @@ class SelfOrganizingMap(object):
         self.maxAlpha = alpha
         self.minAlpha = 0000.1
         self.pMin = 0.75
+        np.random.seed(20)
         # 0 for Kohenen, 1 for neural gas
         self.typeOfAlgorithm = type
         self.numberOfNeurons = numberOfNeurons
@@ -101,14 +102,28 @@ class SelfOrganizingMap(object):
         for i in range(len(self.neuron_weights)):
             self.neighborhood.append(math.exp(-i / self.radius))
 
+    def calculateError(self):
+        error = 0
+        errorDist = []
+        for inp in self.input_data:
+            for i in self.neuron_weights:
+                errorDist.append(distance.euclidean(i, inp))
+            error += min(errorDist) ** 2
+            errorDist.clear()
+            print(inp)
+        self.error.append(error / len(self.input_data))
+
     def train(self, epoch_number):
-        self.plot("Befor")
+        self.plot("Before")
         self.allSteps = epoch_number * len(self.input_data)
         combined_data = list(self.input_data)
         step = 0
+        s = 0
+        self.calculateError()
         for epoch in range(epoch_number):
             np.random.shuffle(combined_data)
             for inp in combined_data:
+                print(s)
                 self.calculateDistance(inp, self.neuron_weights, self.distance)
                 self.findWinner()
                 if self.typeOfAlgorithm == 0:
@@ -119,15 +134,15 @@ class SelfOrganizingMap(object):
                 else:
                     self.sortNeurons()
                     self.gasNeighborhood()
+                s += 1
                 self.updateWeights(inp)
-                # self.error.append(self.distance[self.winner] / len(self.input_data[0]))
                 self.clearLists(step)
-                # if step % 20 == 0:
-                # self.plot(str(step))
                 step += 1
-
+            self.calculateError()
             print(epoch)
+        print(self.error)
         self.plot("After")
+        self.plotForError(epoch_number + 1)
 
     def plot(self, title):
         inputX = []
@@ -145,15 +160,14 @@ class SelfOrganizingMap(object):
         plt.title(title)
         plt.show()
 
-    # def plotForError(self):
-    #     plt.plot(self.error, self.number, 'ro', markersize=1)
-    #     plt.title("Blad kwantyzacji")
-    #     plt.xlabel(x_label)
-    #     plt.ylabel(y_label)
-    #     plt.show()
+    def plotForError(self, epoch):
+        epochRange = np.arange(1, epoch + 1, 1)
+        plt.plot(epochRange, self.error, 'ro', markersize=1)
+        plt.title("Blad kwantyzacji")
+        plt.show()
 
 
 # GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(300, "RandomPoints.txt", 0, 0.5, 0.5)
+SOM = SelfOrganizingMap(250, "RandomPoints.txt", 0, 0.5, 0.5)
 # SOM = SelfOrganizingMap(100, "testData.txt", 0, 0.5, 0.5)
-SOM.train(1)
+SOM.train(10)
