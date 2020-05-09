@@ -2,19 +2,21 @@ import csv
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
 from scipy.spatial import distance
-import matplotlib
+from PIL import Image
+from numpy import asarray
+
 
 import GeneratePoints
 
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-
 
 class SelfOrganizingMap(object):
-    def __init__(self, numberOfNeurons, input_data_file, type, radius, alpha, gaussian):
+    def __init__(self, numberOfNeurons, type, radius, alpha, gaussian, inputFile, outputFile):
+        self.image = Image.open(inputFile)
+        self.outputFile = outputFile
+        self.x, self.y = self.image.size
+        self.input_data = asarray(self.image).reshape(self.x * self.y, 3).tolist()
+        # self.input_data = asarray(self.image).ravel()
         self.radius = radius
         self.maxRadius = radius
         self.minRadius = 0000.1
@@ -28,14 +30,12 @@ class SelfOrganizingMap(object):
         # 0 for Kohenen, 1 for neural gas
         self.typeOfAlgorithm = type
         self.numberOfNeurons = numberOfNeurons
-        self.input_data = self.file_input(input_data_file)
-        self.neuron_weights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
-                                               size=(self.numberOfNeurons, len(self.input_data[0])))
+        self.neuron_weights = np.random.normal(0, 255,
+                                               size=(numberOfNeurons, len(self.input_data[0])))
         self.distance = []
         self.winner = -1
         self.neighborhood = []
         self.winnerDistance = []
-        self.testData = self.file_input("testData.txt")
         self.error = []
         self.potential = np.ones(self.numberOfNeurons)
         self.activation = np.ones(self.numberOfNeurons)
@@ -111,22 +111,33 @@ class SelfOrganizingMap(object):
         for i in range(len(self.neuron_weights)):
             self.neighborhood.append(math.exp(-i / self.radius))
 
-    def calculateError(self):
-        error = 0
-        errorDist = []
+    def flatten(self, list):
+        newList = []
+        for i in list:
+            for j in i:
+                newList.append(j)
+        return newList
+
+    def saveImage(self):
+        outputArray = []
+        distances = []
+        temp = []
         for inp in self.input_data:
             for i in self.neuron_weights:
-                errorDist.append(distance.euclidean(i, inp))
-            error += min(errorDist) ** 2
-            errorDist.clear()
-        self.error.append(error / len(self.input_data))
+                distances.append(distance.euclidean(i, inp))
+                temp = [int(x) for x in self.neuron_weights[distances.index(min(distances))]]
+            outputArray.append(temp)
+            distances.clear()
+        outputArray = self.flatten(outputArray)
+        imageToSave = Image.frombytes("RGB", (self.x, self.y), bytes(outputArray))
+        imageToSave.save(self.outputFile, "JPEG")
+
+
 
     def train(self, epoch_number):
-        self.plot("Before")
         self.allSteps = epoch_number * len(self.input_data)
         combined_data = list(self.input_data)
         step = 0
-        self.calculateError()
         for epoch in range(epoch_number):
             np.random.shuffle(combined_data)
             for inp in combined_data:
@@ -140,38 +151,15 @@ class SelfOrganizingMap(object):
                 else:
                     self.sortNeurons()
                     self.gasNeighborhood()
+                print(step / len(self.input_data))
                 self.updateWeights(inp)
                 self.clearLists(step)
                 step += 1
-            self.calculateError()
-        print(self.error)
-        self.plot("After")
-        self.plotForError(epoch_number + 1)
-
-    def plot(self, title):
-        inputX = []
-        inputY = []
-        for i in self.input_data:
-            inputX.append(i[0])
-            inputY.append(i[1])
-        plt.plot(inputX, inputY, 'bo')
-        weightsX = []
-        weightsY = []
-        for i in self.neuron_weights:
-            weightsX.append(i[0])
-            weightsY.append(i[1])
-        plt.plot(weightsX, weightsY, 'bo', color='red')
-        plt.title(title)
-        plt.show()
-
-    def plotForError(self, epoch):
-        epochRange = np.arange(1, epoch + 1, 1)
-        plt.plot(epochRange, self.error, 'ro', markersize=1)
-        plt.title("Blad kwantyzacji")
-        plt.show()
+        self.saveImage()
 
 
 # GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(250, "RandomPoints.txt", 0, 0.5, 0.5, 0)
+SOM = SelfOrganizingMap(16, 0, 0.5, 0.5, 0, "image.jpg", "newImage.jpeg")
 # SOM = SelfOrganizingMap(100, "testData.txt", 0, 0.5, 0.5)
-SOM.train(10)
+
+SOM.train(1)

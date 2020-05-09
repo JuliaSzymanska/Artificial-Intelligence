@@ -142,9 +142,7 @@ class SelfOrganizingMap(object):
                 self.clearLists(step)
                 step += 1
             self.calculateError()
-            print(epoch)
             self.animation_plots.append(np.copy(self.neuron_weights))
-        print(self.error)
         self.plot("After")
         self.plotForError(epoch_number + 1)
         self.animate_plots()
