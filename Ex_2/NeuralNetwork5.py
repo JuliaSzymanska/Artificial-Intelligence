@@ -12,11 +12,10 @@ import GeneratePoints
 
 class SelfOrganizingMap(object):
     def __init__(self, numberOfNeurons, type, radius, alpha, gaussian, inputFile, outputFile):
-        self.image = Image.open(inputFile)
+        image = Image.open(inputFile)
         self.outputFile = outputFile
-        self.x, self.y = self.image.size
-        self.input_data = asarray(self.image).reshape(self.x * self.y, 3).tolist()
-        # self.input_data = asarray(self.image).ravel()
+        self.x, self.y = image.size
+        self.input_data = asarray(image).reshape(self.x * self.y, 3).tolist()
         self.radius = radius
         self.maxRadius = radius
         self.minRadius = 0000.1
