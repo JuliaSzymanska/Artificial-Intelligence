@@ -6,7 +6,7 @@ from scipy.interpolate import interp1d
 import matplotlib.animation as animation
 from scipy.spatial import distance
 import matplotlib
-# matplotlib.use("TkAgg")
+matplotlib.use("TkAgg")
 import GeneratePoints
 
 
