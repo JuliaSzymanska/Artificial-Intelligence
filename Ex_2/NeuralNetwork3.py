@@ -13,7 +13,7 @@ matplotlib.use("TkAgg")
 # import matplotlib.animation as animation
 
 class SelfOrganizingMap(object):
-    def __init__(self, numberOfNeurons, input_data_file, type, radius, alpha):
+    def __init__(self, numberOfNeurons, input_data_file, type, radius, alpha,  gaussian):
         self.radius = radius
         self.maxRadius = radius
         self.minRadius = 0000.1
@@ -23,6 +23,7 @@ class SelfOrganizingMap(object):
         self.minAlpha = 0000.1
         self.pMin = 0.75
         np.random.seed(20)
+        self.gaussian = gaussian
         # 0 for Kohenen, 1 for neural gas
         self.typeOfAlgorithm = type
         self.numberOfNeurons = numberOfNeurons
@@ -64,8 +65,15 @@ class SelfOrganizingMap(object):
             self.winner = self.distance.index(min(self.distance))
 
     def kohonenNeighborhood(self):
-        for i in self.winnerDistance:
-            self.neighborhood.append(math.exp(-1 * (i ** 2) / (2 * self.radius ** 2)))
+        if self.gaussian == 1:
+            for i in self.winnerDistance:
+                self.neighborhood.append(math.exp(-1 * (i ** 2) / (2 * self.radius ** 2)))
+        else:
+            for i in self.winnerDistance:
+                if i <= self.radius:
+                    self.neighborhood.append(1)
+                else:
+                    self.neighborhood.append(0)
 
     def clearLists(self, step):
         self.neuronActivation()
@@ -168,6 +176,6 @@ class SelfOrganizingMap(object):
 
 
 # GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(250, "RandomPoints.txt", 0, 0.5, 0.5)
+SOM = SelfOrganizingMap(250, "RandomPoints.txt", 0, 0.5, 0.5, 0)
 # SOM = SelfOrganizingMap(100, "testData.txt", 0, 0.5, 0.5)
 SOM.train(10)
