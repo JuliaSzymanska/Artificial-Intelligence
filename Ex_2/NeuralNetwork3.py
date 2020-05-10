@@ -140,9 +140,9 @@ class SelfOrganizingMap(object):
                     self.gasNeighborhood()
                 self.updateWeights(inp)
                 self.clearLists(step)
+                self.animation_plots.append(np.copy(self.neuron_weights))
                 step += 1
             self.calculateError()
-            self.animation_plots.append(np.copy(self.neuron_weights))
         self.plot("After")
         self.plotForError(epoch_number + 1)
         self.animate_plots()
@@ -181,7 +181,7 @@ class SelfOrganizingMap(object):
             if frame > len(self.animation_plots) - 1:
                 frame = len(self.animation_plots) - 1
             line.set_data(self.animation_plots[frame][:, 0], self.animation_plots[frame][:, 1])
-            ax.set_title("Epoch: " + str(frame))
+            ax.set_title("Input Data: " + str((frame+1)))
             return line
 
         ani = animation.FuncAnimation(fig, animate, len(self.animation_plots), interval=1, repeat=False)
