@@ -69,15 +69,13 @@ class SelfOrganizingMap(object):
 
     def calculateError(self, input, weights):
         error = 0
-        errors = []
         errorDist = []
         for inp in input:
             for i in weights:
                 errorDist.append(distance.euclidean(i, inp))
             error += min(errorDist) ** 2
             errorDist.clear()
-        errors.append(error / len(input))
-        return errors
+        return error / len(input)
 
     def train(self):
         self.plot("Before")
@@ -92,7 +90,7 @@ class SelfOrganizingMap(object):
             self.updateWeights()
             self.winner.clear()
             self.plot(counter)
-            self.error = self.calculateError(self.input_data, self.centroidsWeights)
+            self.error.append(self.calculateError(self.input_data, self.centroidsWeights))
             counter += 1
         self.plotForError(counter)
 

@@ -1,13 +1,9 @@
 import csv
 import numpy as np
 import math
-import matplotlib.pyplot as plt
 from scipy.spatial import distance
 from PIL import Image
 from numpy import asarray
-
-
-import GeneratePoints
 
 
 class SelfOrganizingMap(object):
@@ -157,8 +153,5 @@ class SelfOrganizingMap(object):
         self.saveImage()
 
 
-# GeneratePoints.findPoints()
 SOM = SelfOrganizingMap(16, 0, 0.5, 0.5, 0, "image.jpg", "newImage.jpeg")
-# SOM = SelfOrganizingMap(100, "testData.txt", 0, 0.5, 0.5)
-
 SOM.train(1)
