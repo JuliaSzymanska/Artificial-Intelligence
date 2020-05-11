@@ -1,4 +1,6 @@
 import csv
+import winsound
+
 import numpy as np
 import math
 from scipy.spatial import distance
@@ -127,7 +129,15 @@ class SelfOrganizingMap(object):
         imageToSave = Image.frombytes("RGB", (self.x, self.y), bytes(outputArray))
         imageToSave.save(self.outputFile, "JPEG")
 
-
+    def calculateError(self):
+        error = 0
+        errorDist = []
+        for inp in self.input_data:
+            for i in self.neuron_weights:
+                errorDist.append(distance.euclidean(i, inp))
+            error += min(errorDist) ** 2
+            errorDist.clear()
+        self.error.append(error / len(self.input_data))
 
     def train(self, epoch_number):
         self.allSteps = epoch_number * len(self.input_data)
@@ -150,8 +160,13 @@ class SelfOrganizingMap(object):
                 self.updateWeights(inp)
                 self.clearLists(step)
                 step += 1
+            self.calculateError()
         self.saveImage()
+        print(self.error)
 
 
 SOM = SelfOrganizingMap(16, 0, 0.5, 0.5, 0, "image.jpg", "newImage.jpeg")
 SOM.train(1)
+duration = 1000  # milliseconds
+freq = 440  # Hz
+winsound.Beep(freq, duration)
