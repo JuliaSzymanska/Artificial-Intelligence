@@ -76,7 +76,7 @@ class SelfOrganizingMap(object):
         return error / len(input)
 
     def train(self):
-        self.plot("Before")
+        # self.plot("Before", 0)
         counter = 0
         while self.flag:
             self.flag = False
@@ -85,40 +85,56 @@ class SelfOrganizingMap(object):
                 self.calculateDistance(inp=inp)
                 self.findWinner()
                 self.distance.clear()
+            self.plot(counter, 1)
             self.updateWeights()
-            self.winner.clear()
-            self.plot(counter)
+            if self.flag:
+                self.winner.clear()
             self.error.append(self.calculateError(input=self.input_data, weights=self.centroidsWeights))
             counter += 1
         print(counter)
+        print(self.error)
+        self.plot(counter, 1)
         self.plotForError(counter)
 
-    def plot(self, title):
+    def plot(self, title, color):
+        colors = ['#116315', '#FFD600', '#FF6B00', '#5199ff', '#FF2970', '#B40A1B', '#E47CCD', '#782FEF', '#45D09E', '#FEAC92']
         inputX = []
         inputY = []
-        for i in self.input_data:
-            inputX.append(i[0])
-            inputY.append(i[1])
-        plt.plot(inputX, inputY, 'bo')
+        if color:
+            for j in range(self.k):
+                for i in range(len(self.winner)):
+                    if self.winner[i] == j:
+                        inputX.append(self.combinedData[i][0])
+                        inputY.append(self.combinedData[i][1])
+                plt.plot(inputX, inputY, color=colors[j], marker='o', ls='') # colors[j], marker='*')
+                inputX.clear()
+                inputY.clear()
+        else:
+            for i in self.input_data:
+                inputX.append(i[0])
+                inputY.append(i[1])
+            plt.plot(inputX, inputY, 'bo')
         weightsX = []
         weightsY = []
         for i in self.centroidsWeights:
             weightsX.append(i[0])
             weightsY.append(i[1])
-        plt.plot(weightsX, weightsY, 'bo', color='red')
+        plt.plot(weightsX, weightsY, 'ko', markersize=9, marker='o')
+        for i in range(len(self.centroidsWeights)):
+            plt.plot(weightsX[i], weightsY[i], color=colors[i], marker='o', ls='', markersize=5)
         plt.title(title)
         plt.show()
 
     def plotForError(self, epoch):
         epochRange = np.arange(1, epoch + 1, 1)
-        plt.plot(epochRange, self.error, 'ro', markersize=1)
+        plt.plot(epochRange, self.error, 'ro', markersize=5)
         plt.title("Blad kwantyzacji")
         plt.show()
 
 
 # GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(k=30, input_data_file="RandomPoints.txt", epsilon=0.01, randNumber=5)
-# SOM = SelfOrganizingMap(k=30, input_data_file="testData.txt", epsilon=0.01, randNumber=5)
+# SOM = SelfOrganizingMap(k=10, input_data_file="RandomPoints.txt", epsilon=0.0001, randNumber=5)
+SOM = SelfOrganizingMap(k=2, input_data_file="testData.txt", epsilon=0.0001, randNumber=5)
 SOM.train()
 
 

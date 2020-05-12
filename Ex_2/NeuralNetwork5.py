@@ -59,13 +59,12 @@ class SelfOrganizingMap(object):
                 else:
                     self.neighborhood.append(0)
 
-    def clearLists(self, step):
-        self.neuronActivation()
-        self.distance.clear()
-        self.neighborhood.clear()
-        self.winnerDistance.clear()
-        self.radius = self.maxRadius * (self.minRadius / self.maxRadius) ** (step / self.allSteps)
-        self.alpha = self.maxAlpha * (self.minAlpha / self.maxAlpha) ** (step / self.allSteps)
+    def gasNeighborhood(self):
+        for i in range(len(self.neuron_weights)):
+            self.neighborhood.append(math.exp(-i / self.radius))
+
+    def sortNeurons(self):
+        self.distance, self.neuron_weights = (list(t) for t in zip(*sorted(zip(self.distance, self.neuron_weights))))
 
     def updateWeights(self, inp):
         for i in range(len(self.neuron_weights)):
@@ -87,12 +86,13 @@ class SelfOrganizingMap(object):
             else:
                 self.activation[i] = 1
 
-    def sortNeurons(self):
-        self.distance, self.neuron_weights = (list(t) for t in zip(*sorted(zip(self.distance, self.neuron_weights))))
-
-    def gasNeighborhood(self):
-        for i in range(len(self.neuron_weights)):
-            self.neighborhood.append(math.exp(-i / self.radius))
+    def clearLists(self, step):
+        self.neuronActivation()
+        self.distance.clear()
+        self.neighborhood.clear()
+        self.winnerDistance.clear()
+        self.radius = self.maxRadius * (self.minRadius / self.maxRadius) ** (step / self.allSteps)
+        self.alpha = self.maxAlpha * (self.minAlpha / self.maxAlpha) ** (step / self.allSteps)
 
     def flatten(self, list):
         newList = []
