@@ -2,7 +2,6 @@ import csv
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
 import matplotlib.animation as animation
 from scipy.spatial import distance
 import matplotlib
@@ -128,18 +127,19 @@ class SelfOrganizingMap(object):
         for epoch in range(epoch_number):
             np.random.shuffle(combined_data)
             for inp in combined_data:
-                self.calculateDistance(inp, self.neuron_weights, self.distance)
+                self.calculateDistance(inp=inp, forCalculate=self.neuron_weights,
+                                       distanceCalculation=self.distance)
                 self.findWinner()
                 if self.typeOfAlgorithm == 0:
-                    self.calculateDistance(self.neuron_weights[self.winner], self.neuron_weights,
-                                           self.winnerDistance)
+                    self.calculateDistance(inp=self.neuron_weights[self.winner], forCalculate=self.neuron_weights,
+                                           distanceCalculation=self.winnerDistance)
                     self.kohonenNeighborhood()
                     self.deadNeurons()
                 else:
                     self.sortNeurons()
                     self.gasNeighborhood()
-                self.updateWeights(inp)
-                self.clearLists(step)
+                self.updateWeights(inp=inp)
+                self.clearLists(step=step)
                 self.animation_plots.append(np.copy(self.neuron_weights))
                 step += 1
             self.calculateError()
@@ -186,10 +186,9 @@ class SelfOrganizingMap(object):
 
         ani = animation.FuncAnimation(fig, animate, len(self.animation_plots), interval=1, repeat=False)
         plt.show()
-        # ani.save("output.gif")
 
 
 # GeneratePoints.findPoints()
-SOM = SelfOrganizingMap(20, "RandomPoints.txt", 0, 0.5, 0.5, 0)
-# SOM = SelfOrganizingMap(100, "testData.txt", 0, 0.5, 0.5)
-SOM.train(10)
+# SOM = SelfOrganizingMap(numberOfNeurons=20, input_data_file="RandomPoints.txt", type=1, radius=0.5, alpha=0.5, gaussian=0)
+SOM = SelfOrganizingMap(numberOfNeurons=2, input_data_file="testData.txt", type=1, radius=0.5, alpha=0.5, gaussian=0)
+SOM.train(2)

@@ -9,7 +9,6 @@ def generator(poly, numberOfRandomPoints):
         while True:
             p = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
             if poly.contains(p):
-                # return p
                 listOfPoints.append(p)
                 break
     return listOfPoints

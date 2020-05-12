@@ -1,6 +1,3 @@
-import csv
-import winsound
-
 import numpy as np
 import math
 from scipy.spatial import distance
@@ -22,7 +19,7 @@ class SelfOrganizingMap(object):
         self.maxAlpha = alpha
         self.minAlpha = 0000.1
         self.pMin = 0.75
-        np.random.seed(20)
+        np.random.seed(10)
         self.gaussian = gaussian
         # 0 for Kohenen, 1 for neural gas
         self.typeOfAlgorithm = type
@@ -36,17 +33,6 @@ class SelfOrganizingMap(object):
         self.error = []
         self.potential = np.ones(self.numberOfNeurons)
         self.activation = np.ones(self.numberOfNeurons)
-
-    def file_input(self, file_name):
-        input_arr = []
-        with open(file_name, "r") as f:
-            data = csv.reader(f, delimiter=',')
-            for row in data:
-                tmp_arr = []
-                for i in row:
-                    tmp_arr.append(float(i))
-                input_arr.append(tmp_arr)
-        return np.asarray(input_arr)
 
     def calculateDistance(self, inp, forCalculate, distanceCalculation):
         for i in forCalculate:
@@ -143,30 +129,30 @@ class SelfOrganizingMap(object):
         self.allSteps = epoch_number * len(self.input_data)
         combined_data = list(self.input_data)
         step = 0
+        self.calculateError()
         for epoch in range(epoch_number):
             np.random.shuffle(combined_data)
             for inp in combined_data:
-                self.calculateDistance(inp, self.neuron_weights, self.distance)
+                self.calculateDistance(inp=inp, forCalculate=self.neuron_weights,
+                                       distanceCalculation=self.distance)
                 self.findWinner()
                 if self.typeOfAlgorithm == 0:
-                    self.calculateDistance(self.neuron_weights[self.winner], self.neuron_weights,
-                                           self.winnerDistance)
+                    self.calculateDistance(inp=self.neuron_weights[self.winner], forCalculate=self.neuron_weights,
+                                           distanceCalculation=self.winnerDistance)
                     self.kohonenNeighborhood()
                     self.deadNeurons()
                 else:
                     self.sortNeurons()
                     self.gasNeighborhood()
-                print(step / len(self.input_data))
-                self.updateWeights(inp)
-                self.clearLists(step)
+                # print(step / len(self.input_data))
+                self.updateWeights(inp=inp)
+                self.clearLists(step=step)
                 step += 1
             self.calculateError()
         self.saveImage()
         print(self.error)
 
 
-SOM = SelfOrganizingMap(16, 0, 0.5, 0.5, 0, "image.jpg", "newImage.jpeg")
+SOM = SelfOrganizingMap(numberOfNeurons=16, type=0, radius=0.5, alpha=0.5,
+                        gaussian=0, inputFile="2.jpg", outputFile="newImage.jpeg")
 SOM.train(1)
-duration = 1000  # milliseconds
-freq = 440  # Hz
-winsound.Beep(freq, duration)

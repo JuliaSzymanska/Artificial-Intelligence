@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 import GeneratePoints
 
-# np.random.seed(20)
+np.random.seed(20)
 
 
 class SelfOrganizingMap(object):
@@ -84,14 +84,15 @@ class SelfOrganizingMap(object):
             self.flag = False
             np.random.shuffle(self.combinedData)
             for inp in self.combinedData:
-                self.calculateDistance(inp)
+                self.calculateDistance(inp=inp)
                 self.findWinner()
                 self.distance.clear()
             self.updateWeights()
             self.winner.clear()
             self.plot(counter)
-            self.error.append(self.calculateError(self.input_data, self.centroidsWeights))
+            self.error.append(self.calculateError(input=self.input_data, weights=self.centroidsWeights))
             counter += 1
+        print(counter)
         self.plotForError(counter)
 
     def plot(self, title):
@@ -118,8 +119,8 @@ class SelfOrganizingMap(object):
 
 
 # GeneratePoints.findPoints()
-# SOM = SelfOrganizingMap(3, "test.txt", 0.1)
-SOM = SelfOrganizingMap(30, "testData.txt", 1, 5)
+SOM = SelfOrganizingMap(k=30, input_data_file="RandomPoints.txt", epsilon=0.01, randNumber=5)
+# SOM = SelfOrganizingMap(k=30, input_data_file="testData.txt", epsilon=0.01, randNumber=5)
 SOM.train()
 
 
