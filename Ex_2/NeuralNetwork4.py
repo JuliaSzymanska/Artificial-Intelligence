@@ -2,10 +2,7 @@ import csv
 import numpy as np
 from scipy.spatial import distance
 import matplotlib.pyplot as plt
-
 import GeneratePoints
-
-np.random.seed(20)
 
 
 class SelfOrganizingMap(object):
@@ -16,6 +13,7 @@ class SelfOrganizingMap(object):
         self.centroidsWeights = self.inizializeWeights(randNumber)
         self.distance = []
         self.winner = []
+        np.random.seed(20)
         self.combinedData = list(self.input_data)
         self.flag = True
         self.error = []
