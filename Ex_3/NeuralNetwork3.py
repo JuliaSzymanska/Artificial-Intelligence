@@ -23,8 +23,8 @@ class NeuralNetwork(object):
         self.is_bias = is_bias
         self.input_data, self.expected_data = self.file_input(input_data_file)
         self.initialze_weights()
-        self.radial_coefficient = np.ones(number_of_radial)
-        # self.set_radial_coefficient()
+        self.radial_coefficient = []
+        self.set_radial_coefficient()
         self.epoch_error = 0.0
         self.error_for_epoch = []
         self.epoch_for_error = []
@@ -170,6 +170,5 @@ class NeuralNetwork(object):
         return (err / len(test_output))
 
 
-NeuNet = NeuralNetwork(4, 1, "approximation_1.txt", 0)
+NeuNet = NeuralNetwork(20, 1, "approximation_1.txt", 0)
 NeuNet.train(100)
-# print("Blad dla testowego: ", NeuNet.test_network("approximation_test.txt", True))
