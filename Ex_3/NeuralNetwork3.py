@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 import csv
 from scipy.spatial import distance
 
-learning_coeff = 0.45
+learning_coeff = 0.1
 
 # epoch_error = 0.0
 
-momentum_coeff = 0.9
+momentum_coeff = 0.2
 
 
 class NeuralNetwork(object):
@@ -87,10 +87,8 @@ class NeuralNetwork(object):
             output_adj.append(radial_layer_output * i)
 
         output_adj = np.asarray(output_adj)
-
         actual_output_adj = (learning_coeff * output_adj.T + momentum_coeff * self.delta_weights_linear_layer)
         self.linear_layer_weights -= actual_output_adj
-
         self.delta_weights_linear_layer = actual_output_adj
 
     def train(self, epoch_count):
@@ -101,6 +99,7 @@ class NeuralNetwork(object):
             for inp, outp in combined_data:
                 radial_layer_output, linear_layer_output = self.feed_forward(inp)
                 self.backward_propagation(radial_layer_output, linear_layer_output, inp, outp)
+                # TODO: dzielic przez liczbe punktów
             self.epoch_error /= len(self.input_data)
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
@@ -127,7 +126,7 @@ class NeuralNetwork(object):
     #     plt.show()
 
 
-NeuNet = NeuralNetwork(4, 1, "approximation_1.txt", 1)
+NeuNet = NeuralNetwork(4, 1, "approximation_2.txt", 1)
 NeuNet.train(2000)
 # print("Wynik:")
 # for i in NeuNet.input_data:
