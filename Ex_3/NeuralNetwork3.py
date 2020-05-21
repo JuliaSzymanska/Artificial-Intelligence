@@ -6,9 +6,6 @@ import csv
 from scipy.spatial import distance
 
 learning_coeff = 0.1
-
-# epoch_error = 0.0
-
 momentum_coeff = 0.2
 
 
@@ -31,7 +28,7 @@ class NeuralNetwork(object):
 
     def initialze_weights(self):
         input = np.copy(self.input_data)
-        # np.random.shuffle(input)
+        np.random.shuffle(input)
         for i in range(self.number_of_radial):
             self.radial_layer_weights.append(input[i])
         self.linear_layer_weights = 2 * np.random.random(
@@ -90,14 +87,12 @@ class NeuralNetwork(object):
         self.delta_weights_linear_layer = actual_output_adj
 
     def train(self, epoch_count):
-        error_test_data_plot = []
         input_data_plot = []
         output_data_plot = []
-        test_data, expected_data = self.file_input("approximation_test.txt")
         combined_data = list(zip(self.input_data, self.expected_data))
         for epoch in range(epoch_count):
             self.epoch_error = 0.0
-            # np.random.shuffle(combined_data)
+            np.random.shuffle(combined_data)
             for inp, outp in combined_data:
                 radial_layer_output, linear_layer_output = self.feed_forward(inp)
                 if epoch == epoch_count - 1:
@@ -107,17 +102,9 @@ class NeuralNetwork(object):
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
-            # error_test_data_plot.append(self.test_network("approximation_test.txt"))
-            # self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
-            #                     error_test_data_plot,
-            #                     "Epoki",
-            #                     "Wartość błędu")
             print(epoch, "  ", self.epoch_error)
         self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
                             "Wartość błędu")
-        # self.plot_uni_graph_2_functions("Przebieg funkcji treningowej oraz jej aproksymacji", self.input_data[:, 1],
-        #                                 self.expected_data, "X", "Y", input_data_plot, output_data_plot,
-        #                                 "Funkcja treningowa")
         self.test_network("approximation_test.txt", True)
 
     def file_input(self, file_name):
@@ -126,9 +113,6 @@ class NeuralNetwork(object):
             input_arr = []
             data = csv.reader(f, delimiter=' ')
             for row in data:
-                # tmp_arr = []
-                # for i in row:
-                #     tmp_arr.append(float(i))
                 expected_val.append(float(row[1]))
                 input_arr.append(float(row[0]))
         return np.asarray(input_arr), np.asarray(expected_val)
@@ -151,10 +135,6 @@ class NeuralNetwork(object):
 
     def test_network(self, test_file, is_graph=False):
         test_data, expected_data = self.file_input(test_file)
-        # input_data = test_data[:, 0]
-        # test_data_bias = np.insert(test_data, 0, 1, axis=1)
-        # input_data = np.stack((test_data_bias[:, 0], test_data_bias[:, 1]), axis=1)
-        # expected_data = test_data_bias[:, 2]
         test_output = []
         err = 0.0
         for test_pair in test_data:
@@ -170,5 +150,5 @@ class NeuralNetwork(object):
         return (err / len(test_output))
 
 
-NeuNet = NeuralNetwork(20, 1, "approximation_1.txt", 0)
+NeuNet = NeuralNetwork(30, 1, "approximation_1.txt", 0)
 NeuNet.train(100)
