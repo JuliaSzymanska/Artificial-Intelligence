@@ -18,13 +18,14 @@ class NeuralNetwork(object):
         self.number_of_radial = number_of_radial
         self.number_of_linear = number_of_linear
         self.is_bias = is_bias
+        self.input_data = self.file_input(input_data_file)
         # self.delta_weights_output_layer = []
         # self.delta_weights_hidden_layer = []
         # self.initialze_weights(is_bias, number_of_hidden, number_of_input, number_of_output)
         # self.epoch_error = 0.0
         # self.error_for_epoch = []
         # self.epoch_for_error = []
-        # self.input_data = self.file_input(input_data_file)
+
         # self.expected_data = self.file_input(expected_data_file)
         # self.resolve_bias()
 
@@ -34,8 +35,9 @@ class NeuralNetwork(object):
     def linear_derivative(self, x):
         return 1
 
-    def rbf_gaussian(self, x, c, s):
-        return np.exp(-1 * ((x - c) ** 2) / (2 * s ** 2))
+    # TODO: znalezc to s, to bedzie chyba odchylenie standardowe
+    def rbf_gaussian(self, input, radial_weight, s):
+        return np.exp(-1 * ((input - radial_weight) ** 2) / (2 * s ** 2))
 
     # def backward_propagation(self, radial_layer_result, linear_layer_result, input_data, output_data):
         # avr_err = 0.0
