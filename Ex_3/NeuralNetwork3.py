@@ -14,17 +14,17 @@ from scipy.spatial import distance
 
 
 class NeuralNetwork(object):
-    def __init__(self, number_of_radial, number_of_linear, input_data_file, expected_data_file,
-                 is_bias=0):
+    def __init__(self, number_of_radial, number_of_linear, input_data_file, is_bias=0):
         np.random.seed(30)
         self.radial_layer_weights = []
         self.linear_layer_weights = []
         self.number_of_radial = number_of_radial
         self.number_of_linear = number_of_linear
         self.is_bias = is_bias
-        self.input_data = self.file_input(input_data_file)
+        self.input_data, self.expected_data = self.file_input(input_data_file)
         self.initialze_weights()
         self.radial_coefficient = []
+        self.set_radial_coefficient()
         # self.delta_weights_output_layer = []
         # self.delta_weights_hidden_layer = []
         # self.epoch_error = 0.0
@@ -58,9 +58,9 @@ class NeuralNetwork(object):
     def linear_derivative(self, x):
         return 1
 
-    # TODO: sprawdzic poprawnosc tej metody, s to bedzie chyba odchylenie standardowe
-    def rbf_gaussian(self, input, radial_weight, s):
-        return np.exp(-1 * ((distance.euclidean(input, radial_weight)) ** 2) / (2 * s ** 2))
+    # coefficient to wspoclzynnik z self.coefficient dla danego neuronu
+    def rbf_gaussian(self, input, radial_weight, coefficient):
+        return np.exp(-1 * ((distance.euclidean(input, radial_weight)) ** 2) / (2 * coefficient ** 2))
 
     # def backward_propagation(self, radial_layer_result, linear_layer_result, input_data, output_data):
     # avr_err = 0.0
@@ -100,12 +100,7 @@ class NeuralNetwork(object):
     def train(self, epoch_count):
         combined_data = list(zip(self.input_data, self.expected_data))
         for epoch in range(epoch_count):
-            # epoch_count = 0
-            # self.epoch_error = 1.0
-            # while self.epoch_error > 0.0001:
-            # self.epoch_error = 0.0
             np.random.shuffle(combined_data)
-            self.initialze_weights()
             for inp, outp in combined_data:
                 radial_layer_output, linear_layer_output = self.feed_forward(inp)
                 self.backward_propagation(radial_layer_output, linear_layer_output, inp, outp)
@@ -117,15 +112,17 @@ class NeuralNetwork(object):
         print(epoch_count)
 
     def file_input(self, file_name):
-        input_arr = []
         with open(file_name, "r") as f:
+            expected_val = []
+            input_arr = []
             data = csv.reader(f, delimiter=' ')
             for row in data:
                 tmp_arr = []
                 for i in row:
                     tmp_arr.append(float(i))
+                expected_val.append(float(row[1]))
                 input_arr.append(tmp_arr)
-        return np.asarray(input_arr)
+        return np.asarray(input_arr), np.asarray(expected_val)
 
     # def graph(self):
     #     plt.plot(self.epoch_for_error, self.error_for_epoch, 'ro', markersize=1)
