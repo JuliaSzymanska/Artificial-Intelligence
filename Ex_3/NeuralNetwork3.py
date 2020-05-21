@@ -1,6 +1,10 @@
+import math
+
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
+from scipy.spatial import distance
+
 
 # learning_coeff = 0.45
 #
@@ -19,15 +23,34 @@ class NeuralNetwork(object):
         self.number_of_linear = number_of_linear
         self.is_bias = is_bias
         self.input_data = self.file_input(input_data_file)
-
         self.initialze_weights()
+        self.radial_coefficient = []
         # self.delta_weights_output_layer = []
         # self.delta_weights_hidden_layer = []
         # self.epoch_error = 0.0
         # self.error_for_epoch = []
         # self.epoch_for_error = []
         # self.expected_data = self.file_input(expected_data_file)
-        # self.resolve_bias()
+
+    def initialze_weights(self):
+        input = self.input_data
+        np.random.shuffle(input)
+        for i in range(self.number_of_radial):
+            self.radial_layer_weights[i] = input[i]
+        self.linear_layer_weights = 2 * np.random.random(
+            (self.number_of_radial + self.is_bias, self.number_of_linear)) - 1
+
+    # def calculateDistance(self, inp, forCalculate):
+    #     return distance.euclidean(i, inp))
+
+    def set_radial_coefficient(self):
+        for i in self.radial_layer_weights:
+            max = 0
+            for j in self.radial_layer_weights:
+                neural_distance = distance.euclidean(i, j)
+                if neural_distance > max:
+                    max = neural_distance
+            self.radial_coefficient.append(max / math.sqrt(2 * self.number_of_radial))
 
     def linear_func(self, x):
         return x
@@ -37,52 +60,52 @@ class NeuralNetwork(object):
 
     # TODO: sprawdzic poprawnosc tej metody, s to bedzie chyba odchylenie standardowe
     def rbf_gaussian(self, input, radial_weight, s):
-        return np.exp(-1 * ((input - radial_weight) ** 2) / (2 * s ** 2))
+        return np.exp(-1 * ((distance.euclidean(input, radial_weight)) ** 2) / (2 * s ** 2))
 
     # def backward_propagation(self, radial_layer_result, linear_layer_result, input_data, output_data):
-        # avr_err = 0.0
-        # output_difference = output_layer_result - output_data  # required for mean squared error
-        #
-        # for i in output_difference:
-        #     avr_err += i ** 2
-        # avr_err /= 2
-        # self.epoch_error += avr_err
-        #
-        # delta_coefficient_outp = output_difference * self.sigmoid_derivative(output_layer_result)
-        # hidden_layer_error = delta_coefficient_outp.dot(self.output_layer_weights.T)
-        # if self.is_bias == 1:
-        #     hidden_layer_error = hidden_layer_error[1:]
-        #     delta_coefficient_hidden = hidden_layer_error * self.sigmoid_derivative(hidden_layer_result[1:])
-        # else:
-        #     delta_coefficient_hidden = hidden_layer_error * self.sigmoid_derivative(hidden_layer_result)
-        #
-        # output_adj = []
-        # hidden_adj = []
-        # for i in delta_coefficient_outp:
-        #     output_adj.append(hidden_layer_result * i)
-        # for i in delta_coefficient_hidden:
-        #     hidden_adj.append(input_data * i)
-        #
-        # hidden_adj = np.asarray(hidden_adj)
-        # output_adj = np.asarray(output_adj)
-        #
-        # actual_hidden_adj = (learning_coeff * hidden_adj.T + momentum_coeff * self.delta_weights_hidden_layer)
-        # actual_output_adj = (learning_coeff * output_adj.T + momentum_coeff * self.delta_weights_output_layer)
-        # self.hidden_layer_weights -= actual_hidden_adj
-        # self.output_layer_weights -= actual_output_adj
-        #
-        # self.delta_weights_hidden_layer = actual_hidden_adj
-        # self.delta_weights_output_layer = actual_output_adj
+    # avr_err = 0.0
+    # output_difference = output_layer_result - output_data  # required for mean squared error
+    #
+    # for i in output_difference:
+    #     avr_err += i ** 2
+    # avr_err /= 2
+    # self.epoch_error += avr_err
+    #
+    # delta_coefficient_outp = output_difference * self.sigmoid_derivative(output_layer_result)
+    # hidden_layer_error = delta_coefficient_outp.dot(self.output_layer_weights.T)
+    # if self.is_bias == 1:
+    #     hidden_layer_error = hidden_layer_error[1:]
+    #     delta_coefficient_hidden = hidden_layer_error * self.sigmoid_derivative(hidden_layer_result[1:])
+    # else:
+    #     delta_coefficient_hidden = hidden_layer_error * self.sigmoid_derivative(hidden_layer_result)
+    #
+    # output_adj = []
+    # hidden_adj = []
+    # for i in delta_coefficient_outp:
+    #     output_adj.append(hidden_layer_result * i)
+    # for i in delta_coefficient_hidden:
+    #     hidden_adj.append(input_data * i)
+    #
+    # hidden_adj = np.asarray(hidden_adj)
+    # output_adj = np.asarray(output_adj)
+    #
+    # actual_hidden_adj = (learning_coeff * hidden_adj.T + momentum_coeff * self.delta_weights_hidden_layer)
+    # actual_output_adj = (learning_coeff * output_adj.T + momentum_coeff * self.delta_weights_output_layer)
+    # self.hidden_layer_weights -= actual_hidden_adj
+    # self.output_layer_weights -= actual_output_adj
+    #
+    # self.delta_weights_hidden_layer = actual_hidden_adj
+    # self.delta_weights_output_layer = actual_output_adj
 
     def train(self, epoch_count):
         combined_data = list(zip(self.input_data, self.expected_data))
         for epoch in range(epoch_count):
-        # epoch_count = 0
-        # self.epoch_error = 1.0
-        # while self.epoch_error > 0.0001:
-            self.epoch_error = 0.0
+            # epoch_count = 0
+            # self.epoch_error = 1.0
+            # while self.epoch_error > 0.0001:
+            # self.epoch_error = 0.0
             np.random.shuffle(combined_data)
-            self.initialze_weights(combined_data)
+            self.initialze_weights()
             for inp, outp in combined_data:
                 radial_layer_output, linear_layer_output = self.feed_forward(inp)
                 self.backward_propagation(radial_layer_output, linear_layer_output, inp, outp)
@@ -92,19 +115,6 @@ class NeuralNetwork(object):
             # print(epoch_count, "  ", self.epoch_error)
             epoch_count += 1
         print(epoch_count)
-
-    def initialze_weights(self):
-        input = self.input_data
-        np.random.shuffle(input)
-        for i in range(self.number_of_radial):
-            self.radial_layer_weights[i] = input[i]
-        self.linear_layer_weights = 2 * np.random.random((self.number_of_radial + self.is_bias, self.number_of_linear)) - 1
-
-    # def resolve_bias(self):
-    #     if self.is_bias == 1:
-    #         self.input_data = np.insert(self.input_data, 0, 1, axis=1)
-    #         self.delta_weights_hidden_layer = np.insert(self.delta_weights_hidden_layer, 0, 0, axis=0)
-    #         self.delta_weights_output_layer = np.insert(self.delta_weights_output_layer, 0, 0, axis=0)
 
     def file_input(self, file_name):
         input_arr = []
