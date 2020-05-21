@@ -63,7 +63,7 @@ class NeuralNetwork(object):
         output_layer_output = self.linear_func(np.dot(radial_layer_output, self.linear_layer_weights))
         return radial_layer_output, output_layer_output
 
-    def backward_propagation(self, radial_layer_output, linear_layer_output, input_data, output_data):
+    def backward_propagation(self, radial_layer_output, linear_layer_output, output_data):
         avr_err = 0.0
         output_difference = linear_layer_output - output_data
 
@@ -98,7 +98,7 @@ class NeuralNetwork(object):
                 if epoch == epoch_count - 1:
                     input_data_plot.append(inp)
                     output_data_plot.append(*linear_layer_output)
-                self.backward_propagation(radial_layer_output, linear_layer_output, inp, outp)
+                self.backward_propagation(radial_layer_output, linear_layer_output, outp)
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
