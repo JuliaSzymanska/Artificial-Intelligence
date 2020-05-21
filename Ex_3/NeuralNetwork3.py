@@ -19,13 +19,13 @@ class NeuralNetwork(object):
         self.number_of_linear = number_of_linear
         self.is_bias = is_bias
         self.input_data = self.file_input(input_data_file)
+
+        self.initialze_weights()
         # self.delta_weights_output_layer = []
         # self.delta_weights_hidden_layer = []
-        # self.initialze_weights(is_bias, number_of_hidden, number_of_input, number_of_output)
         # self.epoch_error = 0.0
         # self.error_for_epoch = []
         # self.epoch_for_error = []
-
         # self.expected_data = self.file_input(expected_data_file)
         # self.resolve_bias()
 
@@ -35,7 +35,7 @@ class NeuralNetwork(object):
     def linear_derivative(self, x):
         return 1
 
-    # TODO: znalezc to s, to bedzie chyba odchylenie standardowe
+    # TODO: sprawdzic poprawnosc tej metody, s to bedzie chyba odchylenie standardowe
     def rbf_gaussian(self, input, radial_weight, s):
         return np.exp(-1 * ((input - radial_weight) ** 2) / (2 * s ** 2))
 
@@ -93,9 +93,11 @@ class NeuralNetwork(object):
             epoch_count += 1
         print(epoch_count)
 
-    def initialze_weights(self, combined_data):
+    def initialze_weights(self):
+        input = self.input_data
+        np.random.shuffle(input)
         for i in range(self.number_of_radial):
-            self.radial_layer_weights[i] = combined_data[i]
+            self.radial_layer_weights[i] = input[i]
         self.linear_layer_weights = 2 * np.random.random((self.number_of_radial + self.is_bias, self.number_of_linear)) - 1
 
     # def resolve_bias(self):
@@ -115,17 +117,17 @@ class NeuralNetwork(object):
                 input_arr.append(tmp_arr)
         return np.asarray(input_arr)
 
-    def graph(self):
-        plt.plot(self.epoch_for_error, self.error_for_epoch, 'ro', markersize=1)
-        plt.title("Błąd średniokwadratowy w zależności od epoki")
-        plt.ylabel("Błąd średniokwadratowy")
-        plt.xlabel("Epoka")
-        plt.show()
+    # def graph(self):
+    #     plt.plot(self.epoch_for_error, self.error_for_epoch, 'ro', markersize=1)
+    #     plt.title("Błąd średniokwadratowy w zależności od epoki")
+    #     plt.ylabel("Błąd średniokwadratowy")
+    #     plt.xlabel("Epoka")
+    #     plt.show()
 
 
 NeuNet = NeuralNetwork(4, 3, 4, "transformation.txt", "transformation.txt", 1)
 NeuNet.train(2000)
-print("Wynik:")
-for i in NeuNet.input_data:
-    print(NeuNet.feed_forward(i, True)[1])
-NeuNet.graph()
+# print("Wynik:")
+# for i in NeuNet.input_data:
+#     print(NeuNet.feed_forward(i, True)[1])
+# NeuNet.graph()
