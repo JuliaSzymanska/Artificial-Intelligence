@@ -87,6 +87,7 @@ class NeuralNetwork(object):
         self.delta_weights_linear_layer = actual_output_adj
 
     def train(self, epoch_count):
+        error_test_data_plot = []
         input_data_plot = []
         output_data_plot = []
         combined_data = list(zip(self.input_data, self.expected_data))
@@ -102,7 +103,12 @@ class NeuralNetwork(object):
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
+            error_test_data_plot.append(self.test_network("approximation_test.txt", False))
             print(epoch, "  ", self.epoch_error)
+        self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
+                            error_test_data_plot,
+                            "Epoki",
+                            "Wartość błędu")
         self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
                             "Wartość błędu")
         self.test_network("approximation_test.txt", True)
@@ -118,7 +124,7 @@ class NeuralNetwork(object):
         return np.asarray(input_arr), np.asarray(expected_val)
 
     def plot_uni_graph(self, title, x_val, y_val, x_label, y_label):
-        plt.plot(x_val, y_val, 'ro', markersize=1)
+        plt.plot(x_val, y_val, 'ro', markersize=3)
         plt.title(title)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
@@ -150,5 +156,5 @@ class NeuralNetwork(object):
         return (err / len(test_output))
 
 
-NeuNet = NeuralNetwork(30, 1, "approximation_1.txt", 0)
+NeuNet = NeuralNetwork(30, 1, "approximation_1.txt", 1)
 NeuNet.train(100)
