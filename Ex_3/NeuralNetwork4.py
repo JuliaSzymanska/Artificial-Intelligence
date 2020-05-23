@@ -1,4 +1,6 @@
 import math
+from collections import Counter
+
 import neuralgas
 import numpy as np
 import matplotlib.pyplot as plt
@@ -90,35 +92,51 @@ class NeuralNetwork(object):
         self.linear_layer_weights -= actual_output_adj
         self.delta_weights_linear_layer = actual_output_adj
 
-    def train(self, epoch_count): #TODO add calssification algorithm
+    def train(self, epoch_count):  # TODO add calssification algorithm
         error_test_data_plot = []
         input_data_plot = []
         output_data_plot = []
-
-        total_correct = [np.zeros(len(self.input_data[0]))]
-        iteration_correct = [np.zeros(len(self.input_data[0]))]
+        swapped_values = [[0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        classification_1_error = []
+        classification_2_error = []
+        classification_3_error = []
+        expected_classes_amount = list(Counter(self.expected_data).values())
 
         combined_data = list(zip(self.input_data, self.expected_data))
         for epoch in range(epoch_count):
+
+            epoch_correct = np.zeros(len(self.input_data[0]))  # 0 for total classes
+
+            # learned_classes_amount = np.zeros(len(expected_classes_amount[0]))
+
             self.epoch_error = 0.0
             np.random.shuffle(combined_data)
             for inp, outp in combined_data:
                 radial_layer_output, linear_layer_output = self.feed_forward(inp)
-                if epoch == epoch_count - 1:
-                    input_data_plot.append(inp)
-                    output_data_plot.append(*linear_layer_output)
-                self.backward_propagation(radial_layer_output, linear_layer_output, outp)
+
+                swapped_expected = swapped_values[outp]
+
+                if outp == np.argmax(linear_layer_output, axis=0):
+                    epoch_correct[0] += 1
+                    epoch_correct[outp] += 1
+
+                self.backward_propagation(radial_layer_output, linear_layer_output, swapped_expected)
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
-            error_test_data_plot.append(self.test_network("classification_test.txt", False))
+            classification_1_error.append(epoch_correct[1]/expected_classes_amount[0])
+            classification_2_error.append(epoch_correct[2]/expected_classes_amount[1])
+            classification_3_error.append(epoch_correct[3]/expected_classes_amount[2])
+
+            # error_test_data_plot.append(self.test_network("classification_test.txt", False))
             print(epoch, "  ", self.epoch_error)
+            print(epoch, "  ", epoch_correct)
         # self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
         #                     error_test_data_plot,
         #                     "Epoki",
         #                     "Wartość błędu")
-        # self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
-        #                     "Wartość błędu")
+        self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
+                            "Wartość błędu")
         # self.test_network("classification_test.txt", True)
 
     def file_input(self, file_name):
@@ -127,7 +145,7 @@ class NeuralNetwork(object):
             input_arr = []
             data = csv.reader(f, delimiter=' ')
             for row in data:
-                expected_val.append(float(row[-1]))
+                expected_val.append(int(row[-1]))
                 input_arr.append(np.float_(row[:-1]))
         return np.asarray(input_arr), np.asarray(expected_val)
 
@@ -164,5 +182,5 @@ class NeuralNetwork(object):
         return (err / len(test_output))
 
 
-NeuNet = NeuralNetwork(10, 3, "classification_train.txt", 1)
-NeuNet.train(100)
+NeuNet = NeuralNetwork(30, 3, "classification_train.txt", 1)
+NeuNet.train(1000)
