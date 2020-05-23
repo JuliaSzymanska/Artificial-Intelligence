@@ -116,7 +116,7 @@ class NeuralNetwork(object):
 
                 swapped_expected = swapped_values[outp]
 
-                if outp == np.argmax(linear_layer_output, axis=0):
+                if outp == np.argmax(linear_layer_output, axis=0)+1:
                     epoch_correct[0] += 1
                     epoch_correct[outp] += 1
 
