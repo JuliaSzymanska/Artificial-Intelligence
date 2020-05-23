@@ -92,7 +92,7 @@ class NeuralNetwork(object):
         self.linear_layer_weights -= actual_output_adj
         self.delta_weights_linear_layer = actual_output_adj
 
-    def train(self, epoch_count):  # TODO add calssification algorithm
+    def train(self, epoch_count):
         error_test_data_plot = []
         input_data_plot = []
         output_data_plot = []
@@ -107,8 +107,6 @@ class NeuralNetwork(object):
 
             epoch_correct = np.zeros(len(self.input_data[0]))  # 0 for total classes
 
-            # learned_classes_amount = np.zeros(len(expected_classes_amount[0]))
-
             self.epoch_error = 0.0
             np.random.shuffle(combined_data)
             for inp, outp in combined_data:
@@ -116,7 +114,7 @@ class NeuralNetwork(object):
 
                 swapped_expected = swapped_values[outp]
 
-                if outp == np.argmax(linear_layer_output, axis=0)+1:
+                if outp == np.argmax(linear_layer_output, axis=0) + 1:
                     epoch_correct[0] += 1
                     epoch_correct[outp] += 1
 
@@ -124,9 +122,9 @@ class NeuralNetwork(object):
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
-            classification_1_error.append(epoch_correct[1]/expected_classes_amount[0])
-            classification_2_error.append(epoch_correct[2]/expected_classes_amount[1])
-            classification_3_error.append(epoch_correct[3]/expected_classes_amount[2])
+            classification_1_error.append(epoch_correct[1] / expected_classes_amount[0])
+            classification_2_error.append(epoch_correct[2] / expected_classes_amount[1])
+            classification_3_error.append(epoch_correct[3] / expected_classes_amount[2])
 
             # error_test_data_plot.append(self.test_network("classification_test.txt", False))
             print(epoch, "  ", self.epoch_error)
@@ -156,31 +154,22 @@ class NeuralNetwork(object):
         plt.ylabel(y_label)
         plt.show()
 
-    def plot_uni_graph_2_functions(self, title, x_val, y_val, x_label, y_label, x_val_1, y_val_1, function):
-        plt.plot(x_val, y_val, 'ro', markersize=1, label=function)
-        plt.plot(x_val_1, y_val_1, 'bo', markersize=1, label='Aproksymacja funkcji')
-        plt.title(title)
-        plt.legend()
-        plt.xlabel(x_label)
-        plt.ylabel(y_label)
-        plt.show()
-
-    def test_network(self, test_file, is_graph=False):
-        test_data, expected_data = self.file_input(test_file)
-        test_output = []
-        err = 0.0
-        for test_pair in test_data:
-            hidden_layer_output_test, output_layer_output_test = self.feed_forward(test_pair)
-            test_output.append(output_layer_output_test)
-        for i in range(len(test_output)):
-            err += (test_output[i] - expected_data[i]) ** 2
-        err /= 2
-        if is_graph:
-            self.plot_uni_graph_2_functions("Przebieg funkcji testowej oraz jej aproksymacji", test_data,
-                                            expected_data, "X",
-                                            "Y", test_data, test_output, "Funkcja testowa")
-        return (err / len(test_output))
+    # def test_network(self, test_file, is_graph=False): # TODO change for classification
+    #     test_data, expected_data = self.file_input(test_file)
+    #     test_output = []
+    #     err = 0.0
+    #     for test_pair in test_data:
+    #         hidden_layer_output_test, output_layer_output_test = self.feed_forward(test_pair)
+    #         test_output.append(output_layer_output_test)
+    #     for i in range(len(test_output)):
+    #         err += (test_output[i] - expected_data[i]) ** 2
+    #     err /= 2
+    #     if is_graph:
+    #     # self.plot_uni_graph_2_functions("Przebieg funkcji testowej oraz jej aproksymacji", test_data,
+    #     #                                 expected_data, "X",
+    #     #                                 "Y", test_data, test_output, "Funkcja testowa")
+    #     return (err / len(test_output))
 
 
-NeuNet = NeuralNetwork(30, 3, "classification_train.txt", 1)
+NeuNet = NeuralNetwork(10, 3, "classification_train.txt", 1)
 NeuNet.train(1000)
