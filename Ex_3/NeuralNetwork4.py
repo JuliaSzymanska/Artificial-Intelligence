@@ -10,10 +10,11 @@ momentum_coeff = 0.2
 
 
 class NeuralNetwork(object):
-    def __init__(self, number_of_radial, number_of_linear, input_data_file, is_bias=0):
+    def __init__(self, number_of_radial, number_of_linear, number_of_class, input_data_file, is_bias=0):
         np.random.seed(0)
         self.radial_layer_weights = []
         self.linear_layer_weights = []
+        self.number_of_class = number_of_class
         self.delta_weights_linear_layer = []
         self.number_of_radial = number_of_radial
         self.number_of_linear = number_of_linear
@@ -90,36 +91,43 @@ class NeuralNetwork(object):
         self.linear_layer_weights -= actual_output_adj
         self.delta_weights_linear_layer = actual_output_adj
 
-    def train(self, epoch_count): #TODO add calssification algorithm
+    def train(self, epoch_count):
         error_test_data_plot = []
-        input_data_plot = []
-        output_data_plot = []
-
-        total_correct = [np.zeros(len(self.input_data[0]))]
-        iteration_correct = [np.zeros(len(self.input_data[0]))]
-
+        confusion_matrix = np.zeros([self.number_of_class, self.number_of_class])
         combined_data = list(zip(self.input_data, self.expected_data))
+        number_of_expected = np.zeros([self.number_of_class])
+        number_of_actual = np.zeros([self.number_of_class])
+        number_of_actual_all = []
+        outputs = list(self.expected_data)
+        for i in range(len(number_of_expected)):
+            number_of_expected[i] = outputs.count(i+1)
         for epoch in range(epoch_count):
             self.epoch_error = 0.0
             np.random.shuffle(combined_data)
             for inp, outp in combined_data:
                 radial_layer_output, linear_layer_output = self.feed_forward(inp)
+                for i in range(len(linear_layer_output)):
+                    if int(round(linear_layer_output[i])) == outp:
+                        number_of_actual[int(round(linear_layer_output[i] - 1))] += 1
                 if epoch == epoch_count - 1:
-                    input_data_plot.append(inp)
-                    output_data_plot.append(*linear_layer_output)
+                    confusion_matrix[int(outp) - 1][int(round(linear_layer_output[0] - 1))] += 1
                 self.backward_propagation(radial_layer_output, linear_layer_output, outp)
+            number_of_actual_all.append(number_of_actual)
+            number_of_actual = np.zeros([self.number_of_class])
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
             error_test_data_plot.append(self.test_network("classification_test.txt", False))
             print(epoch, "  ", self.epoch_error)
-        # self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
-        #                     error_test_data_plot,
-        #                     "Epoki",
-        #                     "Wartość błędu")
-        # self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
-        #                     "Wartość błędu")
-        # self.test_network("classification_test.txt", True)
+        print(confusion_matrix)
+        self.plot_number_of_classifications("Klasyfikacja", number_of_expected, number_of_actual_all, "Epoch", "Number")
+        self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
+                            error_test_data_plot,
+                            "Epoki",
+                            "Wartość błędu")
+        self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
+                            "Wartość błędu")
+        print(self.test_network("classification_test.txt", True))
 
     def file_input(self, file_name):
         with open(file_name, "r") as f:
@@ -131,8 +139,28 @@ class NeuralNetwork(object):
                 input_arr.append(np.float_(row[:-1]))
         return np.asarray(input_arr), np.asarray(expected_val)
 
+    def plot_number_of_classifications(self, title, expected_matrix, actual_matrix, x_label, y_label):
+        colors = ['#116315', '#FFD600', '#FF6B00', '#5199ff', '#FF2970', '#B40A1B', '#E47CCD', '#782FEF', '#45D09E',
+                  '#FEAC92']
+        inputX = []
+        epoch = []
+        for j in range(self.number_of_class):
+            inputY = []
+            for i in range(len(actual_matrix)):
+                inputY.append(actual_matrix[i][j])
+                if j == 0:
+                    epoch.append(i)
+            inputY = np.asarray(inputY)
+            inputY = inputY / expected_matrix[j]
+            plt.plot(inputY, colors[j], markersize=3, marker='o', ls='', label=str(j+1))
+            plt.title(title)
+            plt.xlabel(x_label)
+            plt.ylabel(y_label)
+            plt.legend()
+        plt.show()
+
     def plot_uni_graph(self, title, x_val, y_val, x_label, y_label):
-        plt.plot(x_val, y_val, 'ro', markersize=3)
+        plt.plot(x_val, y_val, 'r', markersize=3)
         plt.title(title)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
@@ -157,12 +185,12 @@ class NeuralNetwork(object):
         for i in range(len(test_output)):
             err += (test_output[i] - expected_data[i]) ** 2
         err /= 2
-        if is_graph:
-            self.plot_uni_graph_2_functions("Przebieg funkcji testowej oraz jej aproksymacji", test_data,
-                                            expected_data, "X",
-                                            "Y", test_data, test_output, "Funkcja testowa")
+        # if is_graph:
+        #     self.plot_uni_graph_2_functions("Przebieg funkcji testowej oraz jej aproksymacji", test_data,
+        #                                     expected_data, "X",
+        #                                     "Y", test_data, test_output, "Funkcja testowa")
         return (err / len(test_output))
 
 
-NeuNet = NeuralNetwork(10, 3, "classification_train.txt", 1)
+NeuNet = NeuralNetwork(10, 1, 3, "classification_train.txt", 1)
 NeuNet.train(100)
