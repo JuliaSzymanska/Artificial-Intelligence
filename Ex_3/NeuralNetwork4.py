@@ -1,6 +1,4 @@
 import math
-from collections import Counter
-
 import neuralgas
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,10 +10,11 @@ momentum_coeff = 0.2
 
 
 class NeuralNetwork(object):
-    def __init__(self, number_of_radial, number_of_linear, input_data_file, is_bias=0):
+    def __init__(self, number_of_radial, number_of_linear, number_of_class, input_data_file, is_bias=0):
         np.random.seed(0)
         self.radial_layer_weights = []
         self.linear_layer_weights = []
+        self.number_of_class = number_of_class
         self.delta_weights_linear_layer = []
         self.number_of_radial = number_of_radial
         self.number_of_linear = number_of_linear
@@ -94,15 +93,14 @@ class NeuralNetwork(object):
 
     def train(self, epoch_count):
         error_test_data_plot = []
-        input_data_plot = []
-        output_data_plot = []
-        swapped_values = [[0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
-        classification_1_error = []
-        classification_2_error = []
-        classification_3_error = []
-        expected_classes_amount = list(Counter(self.expected_data).values())
-
+        confusion_matrix = np.zeros([self.number_of_class, self.number_of_class])
         combined_data = list(zip(self.input_data, self.expected_data))
+        expected_amount_of_obj_in_classes = np.zeros([self.number_of_class])
+        assigned_amount_of_obj_in_classes_per_epoch = np.zeros([self.number_of_class])
+        assigned_amount_of_obj_in_classes = []
+        outputs = list(self.expected_data)
+        for i in range(len(expected_amount_of_obj_in_classes)):
+            expected_amount_of_obj_in_classes[i] = outputs.count(i + 1)
         for epoch in range(epoch_count):
 
             epoch_correct = np.zeros(len(self.input_data[0]))  # 0 for total classes
@@ -111,31 +109,28 @@ class NeuralNetwork(object):
             np.random.shuffle(combined_data)
             for inp, outp in combined_data:
                 radial_layer_output, linear_layer_output = self.feed_forward(inp)
-
-                swapped_expected = swapped_values[outp]
-
-                if outp == np.argmax(linear_layer_output, axis=0) + 1:
-                    epoch_correct[0] += 1
-                    epoch_correct[outp] += 1
-
-                self.backward_propagation(radial_layer_output, linear_layer_output, swapped_expected)
+                for i in range(len(linear_layer_output)):
+                    if int(round(linear_layer_output[i])) == outp:
+                        assigned_amount_of_obj_in_classes_per_epoch[int(round(linear_layer_output[i] - 1))] += 1
+                if epoch == epoch_count - 1:
+                    confusion_matrix[int(outp) - 1][int(round(linear_layer_output[0] - 1))] += 1
+                self.backward_propagation(radial_layer_output, linear_layer_output, outp)
+            assigned_amount_of_obj_in_classes.append(assigned_amount_of_obj_in_classes_per_epoch)
+            assigned_amount_of_obj_in_classes_per_epoch = np.zeros([self.number_of_class])
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
-            classification_1_error.append(epoch_correct[1] / expected_classes_amount[0])
-            classification_2_error.append(epoch_correct[2] / expected_classes_amount[1])
-            classification_3_error.append(epoch_correct[3] / expected_classes_amount[2])
-
-            # error_test_data_plot.append(self.test_network("classification_test.txt", False))
+            error_test_data_plot.append(self.test_network("classification_test.txt", False))
             print(epoch, "  ", self.epoch_error)
-            print(epoch, "  ", epoch_correct)
-        # self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
-        #                     error_test_data_plot,
-        #                     "Epoki",
-        #                     "Wartość błędu")
+        print("Tablica pomylek:\n", confusion_matrix)
+        self.plot_number_of_classifications("Klasyfikacja", expected_amount_of_obj_in_classes, assigned_amount_of_obj_in_classes, "Epoch", "Number")
+        self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
+                            error_test_data_plot,
+                            "Epoki",
+                            "Wartość błędu")
         self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
                             "Wartość błędu")
-        # self.test_network("classification_test.txt", True)
+        print("Blad dla danych testowych: ", self.test_network("classification_test.txt", True))
 
     def file_input(self, file_name):
         with open(file_name, "r") as f:
@@ -147,29 +142,60 @@ class NeuralNetwork(object):
                 input_arr.append(np.float_(row[:-1]))
         return np.asarray(input_arr), np.asarray(expected_val)
 
+    def plot_number_of_classifications(self, title, expected_matrix, actual_matrix, x_label, y_label):
+        colors = ['#116315', '#FFD600', '#FF6B00', '#5199ff', '#FF2970', '#B40A1B', '#E47CCD', '#782FEF', '#45D09E',
+                  '#FEAC92']
+        epoch = []
+        for j in range(self.number_of_class):
+            inputX = []
+            for i in range(len(actual_matrix)):
+                inputX.append(actual_matrix[i][j])
+                if j == 0:
+                    epoch.append(i)
+            inputX = np.asarray(inputX)
+            inputX = inputX / expected_matrix[j]
+            plt.plot(inputX, colors[j], markersize=3, marker='o', ls='', label=str(j + 1))
+            plt.title(title)
+            plt.xlabel(x_label)
+            plt.ylabel(y_label)
+            plt.legend()
+        plt.show()
+
     def plot_uni_graph(self, title, x_val, y_val, x_label, y_label):
-        plt.plot(x_val, y_val, 'ro', markersize=3)
+        plt.plot(x_val, y_val, 'r', markersize=3)
         plt.title(title)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.show()
 
-    # def test_network(self, test_file, is_graph=False): # TODO change for classification
-    #     test_data, expected_data = self.file_input(test_file)
-    #     test_output = []
-    #     err = 0.0
-    #     for test_pair in test_data:
-    #         hidden_layer_output_test, output_layer_output_test = self.feed_forward(test_pair)
-    #         test_output.append(output_layer_output_test)
-    #     for i in range(len(test_output)):
-    #         err += (test_output[i] - expected_data[i]) ** 2
-    #     err /= 2
-    #     if is_graph:
-    #     # self.plot_uni_graph_2_functions("Przebieg funkcji testowej oraz jej aproksymacji", test_data,
-    #     #                                 expected_data, "X",
-    #     #                                 "Y", test_data, test_output, "Funkcja testowa")
-    #     return (err / len(test_output))
+    def plot_uni_graph_2_functions(self, title, x_val, y_val, x_label, y_label, x_val_1, y_val_1, function):
+        plt.plot(x_val, y_val, 'ro', markersize=1, label=function)
+        plt.plot(x_val_1, y_val_1, 'bo', markersize=1, label='Aproksymacja funkcji')
+        plt.title(title)
+        plt.legend()
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+        plt.show()
+
+    def test_network(self, test_file, is_last=False):
+        test_data, expected_data = self.file_input(test_file)
+        confusion_matrix = np.zeros([self.number_of_class, self.number_of_class])
+        test_output = []
+        err = 0.0
+        counter = 0
+        for test_pair in test_data:
+            hidden_layer_output_test, output_layer_output_test = self.feed_forward(test_pair)
+            test_output.append(output_layer_output_test)
+            if is_last:
+                confusion_matrix[int(expected_data[counter]) - 1][int(round(output_layer_output_test[0] - 1))] += 1
+            counter += 1
+        for i in range(len(test_output)):
+            err += (test_output[i] - expected_data[i]) ** 2
+        err /= 2
+        if is_last:
+            print("Tablica pomylek dla daynch testowych:\n", confusion_matrix)
+        return err / len(test_output)
 
 
-NeuNet = NeuralNetwork(10, 3, "classification_train.txt", 1)
-NeuNet.train(1000)
+NeuNet = NeuralNetwork(10, 1, 3, "classification_train.txt", 1)
+NeuNet.train(100)
