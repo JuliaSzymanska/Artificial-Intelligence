@@ -90,10 +90,14 @@ class NeuralNetwork(object):
         self.linear_layer_weights -= actual_output_adj
         self.delta_weights_linear_layer = actual_output_adj
 
-    def train(self, epoch_count):
+    def train(self, epoch_count): #TODO add calssification algorithm
         error_test_data_plot = []
         input_data_plot = []
         output_data_plot = []
+
+        total_correct = [np.zeros(len(self.input_data[0]))]
+        iteration_correct = [np.zeros(len(self.input_data[0]))]
+
         combined_data = list(zip(self.input_data, self.expected_data))
         for epoch in range(epoch_count):
             self.epoch_error = 0.0
@@ -107,15 +111,15 @@ class NeuralNetwork(object):
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
-            error_test_data_plot.append(self.test_network("approximation_test.txt", False))
+            error_test_data_plot.append(self.test_network("classification_test.txt", False))
             print(epoch, "  ", self.epoch_error)
-        self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
-                            error_test_data_plot,
-                            "Epoki",
-                            "Wartość błędu")
-        self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
-                            "Wartość błędu")
-        self.test_network("approximation_test.txt", True)
+        # self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
+        #                     error_test_data_plot,
+        #                     "Epoki",
+        #                     "Wartość błędu")
+        # self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
+        #                     "Wartość błędu")
+        # self.test_network("classification_test.txt", True)
 
     def file_input(self, file_name):
         with open(file_name, "r") as f:
@@ -123,8 +127,8 @@ class NeuralNetwork(object):
             input_arr = []
             data = csv.reader(f, delimiter=' ')
             for row in data:
-                expected_val.append(float(row[1]))
-                input_arr.append(float(row[0]))
+                expected_val.append(float(row[-1]))
+                input_arr.append(np.float_(row[:-1]))
         return np.asarray(input_arr), np.asarray(expected_val)
 
     def plot_uni_graph(self, title, x_val, y_val, x_label, y_label):
@@ -160,5 +164,5 @@ class NeuralNetwork(object):
         return (err / len(test_output))
 
 
-NeuNet = NeuralNetwork(30, 1, "approximation_1.txt", 1)
+NeuNet = NeuralNetwork(10, 3, "classification_train.txt", 1)
 NeuNet.train(100)

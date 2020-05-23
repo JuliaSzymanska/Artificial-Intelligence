@@ -24,7 +24,7 @@ class SelfOrganizingMap(object):
         self.numberOfNeurons = numberOfNeurons
         self.input_data = input_data_file
         self.neuron_weights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
-                                               size=(self.numberOfNeurons, len(self.input_data)))
+                                               size=(self.numberOfNeurons, len(self.input_data[0])))
         self.distance = []
         self.winner = -1
         self.neighborhood = []
