@@ -44,7 +44,7 @@ class NeuralNetwork(object):
 
     def backward_propagation(self, hidden_layer_result, output_layer_result, input_data, output_data):
         avr_err = 0.0
-        output_difference = output_layer_result - output_data  # required for mean squared error
+        output_difference = output_layer_result - output_data
 
         for i in output_difference:
             avr_err += i ** 2
@@ -73,6 +73,7 @@ class NeuralNetwork(object):
         actual_output_adj = (learning_coeff * output_adj.T + momentum_coeff * self.delta_weights_output_layer)
         self.hidden_layer_weights -= actual_hidden_adj
         self.output_layer_weights -= actual_output_adj
+
 
         self.delta_weights_hidden_layer = actual_hidden_adj
         self.delta_weights_output_layer = actual_output_adj

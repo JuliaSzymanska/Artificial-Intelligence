@@ -10,7 +10,8 @@ momentum_coeff = 0.2
 
 
 class NeuralNetwork(object):
-    def __init__(self, number_of_radial, number_of_linear, number_of_class, input_data_file, is_bias=0):
+    def __init__(self, number_of_radial, number_of_linear, number_of_class, input_data_file, is_bias=0,
+                 is_derivative=0):
         np.random.seed(0)
         self.radial_layer_weights = []
         self.linear_layer_weights = []
@@ -123,7 +124,8 @@ class NeuralNetwork(object):
             error_test_data_plot.append(self.test_network("classification_test.txt", False))
             print(epoch, "  ", self.epoch_error)
         print("Tablica pomylek:\n", confusion_matrix)
-        self.plot_number_of_classifications("Klasyfikacja", expected_amount_of_obj_in_classes, assigned_amount_of_obj_in_classes, "Epoch", "Number")
+        self.plot_number_of_classifications("Klasyfikacja", expected_amount_of_obj_in_classes,
+                                            assigned_amount_of_obj_in_classes, "Epoch", "Number")
         self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
                             error_test_data_plot,
                             "Epoki",
@@ -197,5 +199,6 @@ class NeuralNetwork(object):
         return err / len(test_output)
 
 
-NeuNet = NeuralNetwork(10, 1, 3, "classification_train.txt", 1)
+NeuNet = NeuralNetwork(number_of_radial=10, number_of_linear=1, number_of_class=3,
+                       input_data_file="classification_train.txt", is_bias=1, is_derivative=1)
 NeuNet.train(100)

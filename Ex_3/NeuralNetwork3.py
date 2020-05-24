@@ -10,11 +10,13 @@ momentum_coeff = 0.2
 
 
 class NeuralNetwork(object):
-    def __init__(self, number_of_radial, number_of_linear, input_data_file, is_bias=0):
+    def __init__(self, number_of_radial, number_of_linear, input_data_file, is_bias=0, is_derivative=0):
         np.random.seed(0)
+        self.is_derivative = is_derivative
         self.radial_layer_weights = []
         self.linear_layer_weights = []
         self.delta_weights_linear_layer = []
+        self.delta_weights_radial_layer = []
         self.number_of_radial = number_of_radial
         self.number_of_linear = number_of_linear
         self.is_bias = is_bias
@@ -34,6 +36,7 @@ class NeuralNetwork(object):
         self.linear_layer_weights = 2 * np.random.random(
             (self.number_of_radial + self.is_bias, self.number_of_linear)) - 1
         self.delta_weights_linear_layer = np.zeros((self.number_of_radial + self.is_bias, self.number_of_linear))
+        self.delta_weights_radial_layer = np.zeros_like(self.radial_layer_weights)
 
     def set_radial_coefficient(self):
         for i in self.radial_layer_weights:
@@ -50,20 +53,29 @@ class NeuralNetwork(object):
     def linear_derivative(self, x):
         return 1
 
-    def rbf_gaussian(self, input, radial_weight, coefficient):
-        return np.exp(-1 * ((distance.euclidean(input, radial_weight)) ** 2) / (2 * coefficient ** 2))
+    def rbf_gaussian(self, input):
+        output = []
+        for i in range(len(self.radial_layer_weights)):
+            output.append(np.exp(-1 * ((distance.euclidean(input, self.radial_layer_weights[i])) ** 2) / (
+                    2 * self.radial_coefficient[i] ** 2)))
+        return output
+
+    def rbf_gaussian_derivative(self, input):
+        output = []
+        gaussian = self.rbf_gaussian(input)
+        for i in range(len(self.radial_layer_weights)):
+            output.append(
+                (input - self.radial_layer_weights[i]) * gaussian[i] / self.radial_coefficient[i] ** 2)
+        return output
 
     def feed_forward(self, input_data):
-        radial_layer_output = []
-        for i in range(len(self.radial_layer_weights)):
-            radial_layer_output.append(
-                self.rbf_gaussian(input_data, self.radial_layer_weights[i], self.radial_coefficient[i]))
+        radial_layer_output = self.rbf_gaussian(input_data)
         if self.is_bias == 1:
             radial_layer_output = np.insert(radial_layer_output, 0, 1)
         output_layer_output = self.linear_func(np.dot(radial_layer_output, self.linear_layer_weights))
         return radial_layer_output, output_layer_output
 
-    def backward_propagation(self, radial_layer_output, linear_layer_output, output_data):
+    def backward_propagation(self, radial_layer_output, linear_layer_output, inp, output_data):
         avr_err = 0.0
         output_difference = linear_layer_output - output_data
 
@@ -72,18 +84,40 @@ class NeuralNetwork(object):
         avr_err /= 2
         self.epoch_error += avr_err
 
-        delta_coefficient_outp = output_difference * self.linear_derivative(linear_layer_output)
-        output_adj = []
-        val = 0
-        for i in delta_coefficient_outp:
+        delta_coefficient_linear = output_difference * self.linear_derivative(linear_layer_output)
+        if self.is_derivative:
+            radial_layer_error = delta_coefficient_linear.dot(self.linear_layer_weights.T)
+            delta_coefficient_radial = []
+            if self.is_bias == 1:
+                radial_layer_error = radial_layer_error[1:]
+                # for i in radial_layer_output[1:]:
+                delta_coefficient_radial.append(
+                    radial_layer_error * self.rbf_gaussian_derivative(radial_layer_output[1:]))
+            else:
+                for i in radial_layer_output:
+                    delta_coefficient_radial.append(radial_layer_error * self.rbf_gaussian_derivative(i))
+            radial_adj = []
+            for i in delta_coefficient_radial:
+                radial_adj.append(inp * i)
+            radial_adj = np.asarray(radial_adj)
+
+        linear_adj = []
+        for i in delta_coefficient_linear:
             # TODO: poprawic zeby bylo inacej a dialalo tak samo
             val = [i * j for j in radial_layer_output]
-            output_adj.append(val)
-        output_adj = np.asarray(output_adj)
+            linear_adj.append(val)
+        linear_adj = np.asarray(linear_adj)
 
-        output_adj = np.asarray(output_adj)
-        actual_output_adj = (learning_coeff * output_adj.T + momentum_coeff * self.delta_weights_linear_layer)
+        linear_adj = np.asarray(linear_adj)
+        actual_output_adj = (learning_coeff * linear_adj.T + momentum_coeff * self.delta_weights_linear_layer)
         self.linear_layer_weights -= actual_output_adj
+
+        if self.is_derivative:
+            actual_radial_adj = (learning_coeff * radial_adj.T + momentum_coeff * self.delta_weights_radial_layer)
+            self.radial_layer_weights -= actual_radial_adj
+            self.set_radial_coefficient()
+            self.delta_weights_radial_layer = actual_radial_adj
+
         self.delta_weights_linear_layer = actual_output_adj
 
     def train(self, epoch_count):
@@ -99,7 +133,7 @@ class NeuralNetwork(object):
                 if epoch == epoch_count - 1:
                     input_data_plot.append(inp)
                     output_data_plot.append(*linear_layer_output)
-                self.backward_propagation(radial_layer_output, linear_layer_output, outp)
+                self.backward_propagation(radial_layer_output, linear_layer_output, inp, outp)
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
@@ -156,5 +190,6 @@ class NeuralNetwork(object):
         return (err / len(test_output))
 
 
-NeuNet = NeuralNetwork(30, 1, "approximation_1.txt", 1)
-NeuNet.train(100)
+NeuNet = NeuralNetwork(number_of_radial=30, number_of_linear=1, input_data_file="approximation_1.txt", is_bias=1,
+                       is_derivative=1)
+NeuNet.train(50)
