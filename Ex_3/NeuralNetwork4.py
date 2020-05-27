@@ -37,14 +37,10 @@ class NeuralNetwork(object):
                                           radius=0.5, alpha=0.5, gaussian=0)
         SOM.train(50)
         self.radial_layer_weights = SOM.neuron_weights
-        # np.random.shuffle(input)
-        # for i in range(self.number_of_radial):
-        #     self.radial_layer_weights.append(input[i])
         self.linear_layer_weights = 2 * np.random.random(
             (self.number_of_radial + self.is_bias, self.number_of_linear)) - 1
         self.delta_weights_linear_layer = np.zeros((self.number_of_radial + self.is_bias, self.number_of_linear))
         self.delta_weights_radial_layer = np.zeros_like(self.radial_layer_weights)
-
 
     def set_radial_coefficient(self):
         for i in self.radial_layer_weights:
@@ -55,7 +51,7 @@ class NeuralNetwork(object):
                     max = neural_distance
             self.radial_coefficient.append(max / math.sqrt(2 * self.number_of_radial))
         list = []
-        if self.delta_sigma_radial_layer == []:
+        if not self.delta_sigma_radial_layer:
             self.delta_sigma_radial_layer = np.zeros_like(self.radial_coefficient)
 
     def linear_func(self, x):
@@ -100,33 +96,34 @@ class NeuralNetwork(object):
 
         delta_coefficient_outp = output_difference * self.linear_derivative(linear_layer_output)
 
-        if self.is_derivative:
-            radial_layer_error = delta_coefficient_outp.dot(self.linear_layer_weights.T)
-            if self.is_bias:
-                radial_layer_error = radial_layer_error[1:]
-                # radial_layer_output = radial_layer_output[1:]
-            radial_adj = (radial_layer_output[1:] * radial_layer_error * self.rbf_gaussian_derivative(inp - self.radial_layer_weights)).T
-            sigma_adj = (radial_layer_output[1:] * radial_layer_error * self.rbf_gaussian_derivative_sigma(inp - self.radial_layer_weights))
-
         output_adj = []
         for i in delta_coefficient_outp:
             # TODO: poprawic zeby bylo inacej a dialalo tak samo
             val = [i * j for j in radial_layer_output]
             output_adj.append(val)
         output_adj = np.asarray(output_adj)
-
-        if self.is_derivative:
-            radial_adj = learning_coeff * radial_adj + momentum_coeff * self.delta_weights_radial_layer
-            sigma_adj = learning_coeff * sigma_adj + momentum_coeff * self.delta_sigma_radial_layer
-            self.radial_layer_weights -= radial_adj
-            self.radial_coefficient -= sigma_adj
-            self.delta_sigma_radial_layer = sigma_adj
-            self.delta_weights_radial_layer = radial_adj
-
         output_adj = np.asarray(output_adj)
         actual_output_adj = (learning_coeff * output_adj.T + momentum_coeff * self.delta_weights_linear_layer)
         self.linear_layer_weights -= actual_output_adj
         self.delta_weights_linear_layer = actual_output_adj
+
+        if self.is_derivative:
+            radial_layer_error = delta_coefficient_outp.dot(self.linear_layer_weights.T)
+            if self.is_bias:
+                radial_layer_error = radial_layer_error[1:]
+                radial_output = radial_layer_output[1:]
+            else:
+                radial_output = radial_layer_output
+            radial_adj = (radial_output * radial_layer_error * self.rbf_gaussian_derivative(
+                inp - self.radial_layer_weights)).T
+            sigma_adj = (radial_output * radial_layer_error * self.rbf_gaussian_derivative_sigma(
+                inp - self.radial_layer_weights))
+            actual_radial_adj = learning_coeff * radial_adj + momentum_coeff * self.delta_weights_radial_layer
+            actual_radial_coefficient_adj = learning_coeff * sigma_adj + momentum_coeff * self.delta_sigma_radial_layer
+            self.radial_layer_weights -= actual_radial_adj
+            self.radial_coefficient -= actual_radial_coefficient_adj
+            self.delta_sigma_radial_layer = actual_radial_coefficient_adj
+            self.delta_weights_radial_layer = actual_radial_adj
 
     def train(self, epoch_count):
         error_test_data_plot = []
