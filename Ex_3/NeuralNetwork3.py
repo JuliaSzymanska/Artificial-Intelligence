@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import csv
 from scipy.spatial import distance
 
-learning_coeff = 0.1
+learning_coeff = 0.02
 momentum_coeff = 0.2
 
 class NeuralNetwork(object):
@@ -16,6 +16,7 @@ class NeuralNetwork(object):
         self.linear_layer_weights = []
         self.delta_weights_linear_layer = []
         self.delta_weights_radial_layer = []
+        self.delta_coefficient_radial_layer = []
         self.number_of_radial = number_of_radial
         self.number_of_linear = number_of_linear
         self.is_bias = is_bias
@@ -45,6 +46,8 @@ class NeuralNetwork(object):
                 if neural_distance > max:
                     max = neural_distance
             self.radial_coefficient.append(max / math.sqrt(2 * self.number_of_radial))
+        if not self.delta_coefficient_radial_layer:
+            self.delta_coefficient_radial_layer = np.zeros_like(self.radial_coefficient)
 
     def linear_func(self, x):
         return x
@@ -61,8 +64,15 @@ class NeuralNetwork(object):
 
     def rbf_gaussian_derivative(self, input):
         output = []
+        # for i in range(len(input[0])):
         output.append(input / np.power(self.radial_coefficient, 2))
         return np.asarray(output)
+
+    def rbf_gaussian_derivative_sigma(self, input):
+        output = []
+        # for i in range(len(input[0])):
+        output.append(np.power(input, 2) / np.power(self.radial_coefficient, 3))
+        return np.asarray(output).sum(axis=0)
 
     def feed_forward(self, input_data):
         radial_layer_output = self.rbf_gaussian(input_data)
@@ -89,11 +99,28 @@ class NeuralNetwork(object):
             linear_adj.append(val)
         linear_adj = np.asarray(linear_adj)
 
-        linear_adj = np.asarray(linear_adj)
         actual_output_adj = (learning_coeff * linear_adj.T + momentum_coeff * self.delta_weights_linear_layer)
         self.linear_layer_weights -= actual_output_adj
-
         self.delta_weights_linear_layer = actual_output_adj
+
+        if self.is_derivative:
+            radial_layer_error = delta_coefficient_linear.dot(self.linear_layer_weights.T)
+            if self.is_bias:
+                radial_layer_error = radial_layer_error[1:]
+                radial_output = radial_layer_output[1:]
+            else:
+                radial_output = radial_layer_output
+            radial_adj = (radial_output * radial_layer_error * self.rbf_gaussian_derivative(
+                inp - self.radial_layer_weights)).T
+            radial_adj = radial_adj.ravel()
+            sigma_adj = (radial_output * radial_layer_error * self.rbf_gaussian_derivative_sigma(
+                inp - self.radial_layer_weights))
+            actual_radial_adj = learning_coeff * radial_adj + momentum_coeff * self.delta_weights_radial_layer
+            actual_radial_coefficient_adj = learning_coeff * sigma_adj + momentum_coeff * self.delta_coefficient_radial_layer
+            self.radial_layer_weights -= actual_radial_adj
+            self.radial_coefficient -= actual_radial_coefficient_adj
+            self.delta_coefficient_radial_layer = actual_radial_coefficient_adj
+            self.delta_weights_radial_layer = actual_radial_adj
 
 
     def train(self, epoch_count):
