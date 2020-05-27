@@ -178,4 +178,4 @@ class NeuralNetwork(object):
 NeuNet = NeuralNetwork(1, 20, 1, "approximation_1.txt", 1)
 NeuNet.train(20)
 # print("Wynik:")
-print("Blad dla testowego: ", NeuNet.test_network("approximation_test.txt", True))
+print("Blad dla testowego: ", NeuNet.test_network("approximation_test.txt", True, True))
