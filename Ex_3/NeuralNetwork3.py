@@ -8,6 +8,7 @@ from scipy.spatial import distance
 learning_coeff = 0.02
 momentum_coeff = 0.2
 
+
 class NeuralNetwork(object):
     def __init__(self, number_of_radial, number_of_linear, input_data_file, is_bias=0, is_derivative=0):
         np.random.seed(0)
@@ -55,23 +56,19 @@ class NeuralNetwork(object):
     def linear_derivative(self, x):
         return 1
 
-    def rbf_gaussian(self, input):
+    def rbf_gaussian(self, one_input):
         output = []
         for i in range(len(self.radial_layer_weights)):
-            output.append(np.exp(-1 * ((distance.euclidean(input, self.radial_layer_weights[i])) ** 2) / (
+            output.append(np.exp(-1 * ((distance.euclidean(one_input, self.radial_layer_weights[i])) ** 2) / (
                     2 * self.radial_coefficient[i] ** 2)))
         return output
 
-    def rbf_gaussian_derivative(self, input):
-        output = []
-        # for i in range(len(input[0])):
-        output.append(input / np.power(self.radial_coefficient, 2))
+    def rbf_gaussian_derivative(self, one_input):
+        output = [one_input / np.power(self.radial_coefficient, 2)]
         return np.asarray(output)
 
-    def rbf_gaussian_derivative_sigma(self, input):
-        output = []
-        # for i in range(len(input[0])):
-        output.append(np.power(input, 2) / np.power(self.radial_coefficient, 3))
+    def rbf_gaussian_derivative_sigma(self, one_input):
+        output = [np.power(one_input, 2) / np.power(self.radial_coefficient, 3)]
         return np.asarray(output).sum(axis=0)
 
     def feed_forward(self, input_data):
@@ -94,12 +91,12 @@ class NeuralNetwork(object):
 
         linear_adj = []
         for i in delta_coefficient_linear:
-            # TODO: poprawic zeby bylo inacej a dialalo tak samo
+            # TODO: poprawic zeby bylo inacej a dzialalo tak samo
             val = [i * j for j in radial_layer_output]
             linear_adj.append(val)
         linear_adj = np.asarray(linear_adj)
 
-        actual_output_adj = (learning_coeff * linear_adj.T + momentum_coeff * self.delta_weights_linear_layer)
+        actual_output_adj = learning_coeff * linear_adj.T + momentum_coeff * self.delta_weights_linear_layer
         self.linear_layer_weights -= actual_output_adj
         self.delta_weights_linear_layer = actual_output_adj
 
@@ -113,15 +110,18 @@ class NeuralNetwork(object):
             radial_adj = (radial_output * radial_layer_error * self.rbf_gaussian_derivative(
                 inp - self.radial_layer_weights)).T
             radial_adj = radial_adj.ravel()
-            sigma_adj = (radial_output * radial_layer_error * self.rbf_gaussian_derivative_sigma(
-                inp - self.radial_layer_weights))
+            sigma_adj = radial_output * radial_layer_error * self.rbf_gaussian_derivative_sigma(
+                inp - self.radial_layer_weights)
+
             actual_radial_adj = learning_coeff * radial_adj + momentum_coeff * self.delta_weights_radial_layer
-            actual_radial_coefficient_adj = learning_coeff * sigma_adj + momentum_coeff * self.delta_coefficient_radial_layer
+            actual_radial_coefficient_adj = learning_coeff * sigma_adj \
+                                            + momentum_coeff * self.delta_coefficient_radial_layer
+
             self.radial_layer_weights -= actual_radial_adj
             self.radial_coefficient -= actual_radial_coefficient_adj
+
             self.delta_coefficient_radial_layer = actual_radial_coefficient_adj
             self.delta_weights_radial_layer = actual_radial_adj
-
 
     def train(self, epoch_count):
         error_test_data_plot = []

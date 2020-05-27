@@ -97,12 +97,12 @@ class NeuralNetwork(object):
 
         linear_adj = []
         for i in delta_coefficient_linear:
-            # TODO: poprawic zeby bylo inacej a dialalo tak samo
+            # TODO: poprawic zeby bylo inacej a dzialalo tak samo
             val = [i * j for j in radial_layer_output]
             linear_adj.append(val)
         linear_adj = np.asarray(linear_adj)
 
-        actual_linear_adj = (learning_coeff * linear_adj.T + momentum_coeff * self.delta_weights_linear_layer)
+        actual_linear_adj = learning_coeff * linear_adj.T + momentum_coeff * self.delta_weights_linear_layer
         self.linear_layer_weights -= actual_linear_adj
         self.delta_weights_linear_layer = actual_linear_adj
 
@@ -113,14 +113,19 @@ class NeuralNetwork(object):
                 radial_output = radial_layer_output[1:]
             else:
                 radial_output = radial_layer_output
+
             radial_adj = (radial_output * radial_layer_error * self.rbf_gaussian_derivative(
                 inp - self.radial_layer_weights)).T
-            sigma_adj = (radial_output * radial_layer_error * self.rbf_gaussian_derivative_sigma(
-                inp - self.radial_layer_weights))
+            sigma_adj = radial_output * radial_layer_error * self.rbf_gaussian_derivative_sigma(
+                inp - self.radial_layer_weights)
+
             actual_radial_adj = learning_coeff * radial_adj + momentum_coeff * self.delta_weights_radial_layer
-            actual_radial_coefficient_adj = learning_coeff * sigma_adj + momentum_coeff * self.delta_coefficient_radial_layer
+            actual_radial_coefficient_adj = learning_coeff * sigma_adj \
+                                            + momentum_coeff * self.delta_coefficient_radial_layer
+
             self.radial_layer_weights -= actual_radial_adj
             self.radial_coefficient -= actual_radial_coefficient_adj
+
             self.delta_coefficient_radial_layer = actual_radial_coefficient_adj
             self.delta_weights_radial_layer = actual_radial_adj
 
