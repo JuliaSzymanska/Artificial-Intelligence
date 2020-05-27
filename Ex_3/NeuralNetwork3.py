@@ -8,7 +8,6 @@ from scipy.spatial import distance
 learning_coeff = 0.1
 momentum_coeff = 0.2
 
-
 class NeuralNetwork(object):
     def __init__(self, number_of_radial, number_of_linear, input_data_file, is_bias=0, is_derivative=0):
         np.random.seed(0)
