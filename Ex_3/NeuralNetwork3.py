@@ -89,8 +89,7 @@ class NeuralNetwork(object):
 
         delta_coefficient_linear = output_difference * self.linear_derivative(linear_layer_output)
 
-        linear_adj = [(radial_layer_output * delta_coefficient_linear)]
-        linear_adj = np.asarray(linear_adj)
+        linear_adj = np.array([(radial_layer_output * delta_coefficient_linear)])
 
         actual_output_adj = learning_coeff * linear_adj.T + momentum_coeff * self.delta_weights_linear_layer
 
@@ -110,8 +109,11 @@ class NeuralNetwork(object):
 
             radial_adj = (radial_output * delta_coefficient_radial).T
             radial_adj = radial_adj.ravel()
-            sigma_adj = radial_output * radial_layer_error * self.rbf_gaussian_derivative_sigma(
+
+            delta_coefficient_sigma = radial_layer_error * self.rbf_gaussian_derivative_sigma(
                 inp - self.radial_layer_weights)
+
+            sigma_adj = radial_output * delta_coefficient_sigma
 
             actual_radial_adj = learning_coeff * radial_adj + momentum_coeff * self.delta_weights_radial_layer
             actual_radial_coefficient_adj = learning_coeff * sigma_adj \

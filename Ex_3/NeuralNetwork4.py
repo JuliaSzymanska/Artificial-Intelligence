@@ -95,8 +95,7 @@ class NeuralNetwork(object):
 
         delta_coefficient_linear = output_difference * self.linear_derivative(linear_layer_output)
 
-        linear_adj = [(radial_layer_output * delta_coefficient_linear)]
-        linear_adj = np.asarray(linear_adj)
+        linear_adj = np.array([(radial_layer_output * delta_coefficient_linear)])
 
         actual_linear_adj = learning_coeff * linear_adj.T + momentum_coeff * self.delta_weights_linear_layer
         self.linear_layer_weights -= actual_linear_adj
