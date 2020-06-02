@@ -1,5 +1,4 @@
 import math
-
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
@@ -64,11 +63,11 @@ class NeuralNetwork(object):
         return output
 
     def rbf_gaussian_derivative(self, one_input):
-        output = [one_input / np.power(self.radial_coefficient, 2)]
+        output = [one_input * self.rbf_gaussian(one_input) / np.power(self.radial_coefficient, 2)]
         return np.asarray(output)
 
     def rbf_gaussian_derivative_sigma(self, one_input):
-        output = [np.power(one_input, 2) / np.power(self.radial_coefficient, 3)]
+        output = [np.power(one_input, 2) * self.rbf_gaussian(one_input) / np.power(self.radial_coefficient, 3)]
         return np.asarray(output).sum(axis=0)
 
     def feed_forward(self, input_data):

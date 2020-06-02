@@ -59,26 +59,27 @@ class NeuralNetwork(object):
     def linear_derivative(self, x):
         return 1
 
-    def rbf_gaussian(self, input, radial_weight, coefficient):
-        return np.exp(-1 * ((distance.euclidean(input, radial_weight)) ** 2) / (2 * coefficient ** 2))
+    def rbf_gaussian(self, one_input):
+        output = []
+        for i in range(len(self.radial_layer_weights)):
+            output.append(np.exp(-1 * ((distance.euclidean(one_input, self.radial_layer_weights[i])) ** 2) / (
+                    2 * self.radial_coefficient[i] ** 2)))
+        return output
 
     def rbf_gaussian_derivative(self, input):
         output = []
         for i in range(len(input[0])):
-            output.append(input[:, i] / np.power(self.radial_coefficient, 2))
+            output.append(input[:, i] * self.rbf_gaussian(i) / np.power(self.radial_coefficient, 2))
         return np.asarray(output)
 
     def rbf_gaussian_derivative_sigma(self, input):
         output = []
         for i in range(len(input[0])):
-            output.append(np.power(input[:, i], 2) / np.power(self.radial_coefficient, 3))
+            output.append(np.power(input[:, i], 2) * self.rbf_gaussian(i) / np.power(self.radial_coefficient, 3))
         return np.asarray(output).sum(axis=0)
 
     def feed_forward(self, input_data):
-        radial_layer_output = []
-        for i in range(len(self.radial_layer_weights)):
-            radial_layer_output.append(
-                self.rbf_gaussian(input_data, self.radial_layer_weights[i], self.radial_coefficient[i]))
+        radial_layer_output = self.rbf_gaussian(input_data)
         if self.is_bias == 1:
             radial_layer_output = np.insert(radial_layer_output, 0, 1)
         output_layer_output = self.linear_func(np.dot(radial_layer_output, self.linear_layer_weights))
@@ -140,7 +141,6 @@ class NeuralNetwork(object):
         for i in range(len(expected_amount_of_obj_in_classes)):
             expected_amount_of_obj_in_classes[i] = outputs.count(i + 1)
         for epoch in range(epoch_count):
-            epoch_correct = np.zeros(len(self.input_data[0]))  # 0 for total classes
             self.epoch_error = 0.0
             np.random.shuffle(combined_data)
             for inp, outp in combined_data:
