@@ -14,7 +14,9 @@ network = NeuralNetwork(number_of_input=4, number_of_hidden=3, number_of_output=
 network.train(epoch_number=2000)
 ```
 
-
+#### Output
+* mean square error plot
+![]()
 
 
 

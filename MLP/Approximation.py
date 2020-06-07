@@ -118,9 +118,9 @@ class NeuralNetwork(object):
 
     def graph(self):
         plt.plot(self.epoch_for_error, self.error_for_epoch, 'ro', markersize=1)
-        plt.title("Błąd średniokwadratowy w zależności od epoki")
-        plt.ylabel("Błąd średniokwadratowy")
-        plt.xlabel("Epoka")
+        plt.title("Mean square error for the epoch")
+        plt.ylabel("Square error")
+        plt.xlabel("Epoch")
         plt.show()
 
 
