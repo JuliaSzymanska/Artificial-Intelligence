@@ -18,13 +18,13 @@ network.train(epoch_number=2000)
 #### Output
 * Training and testing function approximation
 Example plots:
-![ApproximationTrainingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationTrainingFunction.png) 
-![ApproximationTestingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationTestingFunction.png) 
+![ApproximationTrainingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTrainingFunction.png) 
+![ApproximationTestingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTestingFunction.png) 
 
 * Mean square error plot for training and testing data
 Example plot:
-![ApproximationErrorForTraining.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationErrorForTraining.png)
-![ApproximationErrorForTesting.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationErrorForTesting.png)
+![ApproximationErrorForTraining.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTraining.png)
+![ApproximationErrorForTesting.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTesting.png)
 
 * Error for training and testing data:
 Example values:
@@ -50,7 +50,7 @@ network.train(epoch_number=2000)
 #### Output
 * Mean square error plot
 Example plot:
-![ClassificationPlot.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ClassificationPlot.png)
+![ClassificationPlot.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ClassificationPlot.png)
 
 * Output data on over-trained network
 For input:
