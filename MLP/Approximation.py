@@ -78,23 +78,20 @@ class NeuralNetwork(object):
         self.delta_weights_hidden_layer = actual_hidden_adj
         self.delta_weights_output_layer = actual_output_adj
 
-    def train(self, epoch_count):
+    def train(self, epoch_number):
         combined_data = list(zip(self.input_data, self.expected_data))
-        # for epoch in range(epoch_count):
-        epoch_count = 0
-        self.epoch_error = 1.0
-        while self.epoch_error > 0.0001:
+        for epoch in range(epoch_number):
             self.epoch_error = 0.0
             np.random.shuffle(combined_data)
             for inp, outp in combined_data:
                 hidden_layer_output, output_layer_output = self.feed_forward(inp)
                 self.backward_propagation(hidden_layer_output, output_layer_output, inp, outp)
             self.epoch_error /= 4
-            self.epoch_for_error.append(epoch_count)
+            self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
-            # print(epoch_count, "  ", self.epoch_error)
-            epoch_count += 1
-        print(epoch_count)
+        for i in self.input_data:
+            print(self.feed_forward(i, True)[1])
+        self.graph()
 
     def initialze_weights(self, is_bias, number_of_hidden, number_of_input, number_of_output):
         self.hidden_layer_weights = 2 * np.random.random((number_of_input + is_bias, number_of_hidden)) - 1
@@ -127,9 +124,6 @@ class NeuralNetwork(object):
         plt.show()
 
 
-NeuNet = NeuralNetwork(4, 3, 4, "transformation.txt", "transformation.txt", 1)
-NeuNet.train(2000)
-print("Wynik:")
-for i in NeuNet.input_data:
-    print(NeuNet.feed_forward(i, True)[1])
-NeuNet.graph()
+network = NeuralNetwork(number_of_input=4, number_of_hidden=3, number_of_output=4, input_data_file="transformation_data.txt",
+                        expected_data_file="transformation_data.txt", is_bias=1)
+network.train(epoch_number=2000)
