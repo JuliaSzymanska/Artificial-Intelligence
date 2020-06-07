@@ -16,6 +16,9 @@ network.train(epoch_number=2000)
 ```
 
 #### Output
+* Training and testing function approximation
+![ApproximationTrainingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationTrainingFunction.png) ![ApproximationTestingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationTestingFunction.png)
+
 * Mean square error plot for training data
 Example plot:
 ![ApproximationPlot.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationPlot.png)
