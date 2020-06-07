@@ -5,12 +5,13 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from scipy.spatial import distance
 import matplotlib
+
 matplotlib.use("TkAgg")
 import GeneratePoints
 
 
 class SelfOrganizingMap(object):
-    def __init__(self, numberOfNeurons, input_data_file, type, radius, alpha, gaussian):
+    def __init__(self, numberOfNeurons, input_data_file, radius, alpha, gaussian):
         self.radius = radius
         self.maxRadius = radius
         self.minRadius = 0000.1
@@ -21,8 +22,6 @@ class SelfOrganizingMap(object):
         self.pMin = 0.75
         np.random.seed(20)
         self.gaussian = gaussian
-        # 0 for Kohenen, 1 for neural gas
-        self.typeOfAlgorithm = type
         self.numberOfNeurons = numberOfNeurons
         self.input_data = self.file_input(input_data_file)
         self.neuron_weights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
@@ -53,14 +52,11 @@ class SelfOrganizingMap(object):
             distanceCalculation.append(distance.euclidean(i, inp))
 
     def findWinner(self):
-        if self.typeOfAlgorithm == 0:
-            sortedDistance = np.argsort(np.asarray(self.distance))
-            for i in sortedDistance:
-                if self.activation[i] != 0:
-                    self.winner = i
-                    break
-        else:
-            self.winner = self.distance.index(min(self.distance))
+        sortedDistance = np.argsort(np.asarray(self.distance))
+        for i in sortedDistance:
+            if self.activation[i] != 0:
+                self.winner = i
+                break
 
     def kohonenNeighborhood(self):
         if self.gaussian == 1:
@@ -83,7 +79,7 @@ class SelfOrganizingMap(object):
 
     def updateWeights(self, inp):
         for i in range(len(self.neuron_weights)):
-            if (self.activation[i] == 1 and self.typeOfAlgorithm == 0) or self.typeOfAlgorithm == 1:
+            if self.activation[i] == 1:
                 self.neuron_weights[i] = self.neuron_weights[i] + self.neighborhood[i] * self.alpha * (
                         inp - self.neuron_weights[i])
 
@@ -100,13 +96,6 @@ class SelfOrganizingMap(object):
                 self.activation[i] = 0
             else:
                 self.activation[i] = 1
-
-    def sortNeurons(self):
-        self.distance, self.neuron_weights = (list(t) for t in zip(*sorted(zip(self.distance, self.neuron_weights))))
-
-    def gasNeighborhood(self):
-        for i in range(len(self.neuron_weights)):
-            self.neighborhood.append(math.exp(-i / self.radius))
 
     def calculateError(self):
         error = 0
@@ -130,14 +119,10 @@ class SelfOrganizingMap(object):
                 self.calculateDistance(inp=inp, forCalculate=self.neuron_weights,
                                        distanceCalculation=self.distance)
                 self.findWinner()
-                if self.typeOfAlgorithm == 0:
-                    self.calculateDistance(inp=self.neuron_weights[self.winner], forCalculate=self.neuron_weights,
-                                           distanceCalculation=self.winnerDistance)
-                    self.kohonenNeighborhood()
-                    self.deadNeurons()
-                else:
-                    self.sortNeurons()
-                    self.gasNeighborhood()
+                self.calculateDistance(inp=self.neuron_weights[self.winner], forCalculate=self.neuron_weights,
+                                       distanceCalculation=self.winnerDistance)
+                self.kohonenNeighborhood()
+                self.deadNeurons()
                 self.updateWeights(inp=inp)
                 self.clearLists(step=step)
                 self.animation_plots.append(np.copy(self.neuron_weights))
@@ -171,7 +156,6 @@ class SelfOrganizingMap(object):
 
     def animate_plots(self):
         fig, ax = plt.subplots()
-        # tutaj kreslamy max/min dla wykresu na podstawie 1 epoki
         ax.axis([np.min(self.animation_plots[0], axis=0)[0] - 3, np.max(self.animation_plots[0], axis=0)[0] + 3,
                  np.min(self.animation_plots[0], axis=0)[1] - 3, np.max(self.animation_plots[0], axis=0)[1] + 3])
         ax.plot(self.input_data[:, 0], self.input_data[:, 1], 'bo')
@@ -181,14 +165,15 @@ class SelfOrganizingMap(object):
             if frame > len(self.animation_plots) - 1:
                 frame = len(self.animation_plots) - 1
             line.set_data(self.animation_plots[frame][:, 0], self.animation_plots[frame][:, 1])
-            ax.set_title("Input Data: " + str((frame+1)))
+            ax.set_title("Input Data: " + str((frame + 1)))
             return line
 
         ani = animation.FuncAnimation(fig, animate, len(self.animation_plots), interval=1, repeat=False)
         plt.show()
 
 
-# GeneratePoints.findPoints()
-# SOM = SelfOrganizingMap(numberOfNeurons=20, input_data_file="RandomPoints.txt", type=1, radius=0.5, alpha=0.5, gaussian=0)
-SOM = SelfOrganizingMap(numberOfNeurons=2, input_data_file="testData.txt", type=1, radius=0.5, alpha=0.5, gaussian=0)
-SOM.train(2)
+GeneratePoints.findPoints()
+SOM = SelfOrganizingMap(numberOfNeurons=20, input_data_file="RandomPoints.txt", radius=0.5, alpha=0.5, gaussian=0)
+SOM.train(20)
+SOM = SelfOrganizingMap(numberOfNeurons=20, input_data_file="testData.txt", radius=0.5, alpha=0.5, gaussian=0)
+SOM.train(20)
