@@ -15,10 +15,25 @@ network.train(epoch_number=2000)
 ```
 
 #### Output
-* mean square error plot
-![]()
+* Mean square error plot
+Example plot:
+![MeanSquareError.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/MeanSquareError.png)
 
-
+* Output data on over-trained network
+For input:
+```text
+1 0 0 0
+0 1 0 0
+0 0 1 0
+0 0 0 1
+```
+Example results:
+```text
+[0.98646489 0.00998248 0.00769733 0.00780114]
+[0.00794265 0.9872775  0.0056632  0.00718965]
+[0.01063865 0.00948483 0.98665415 0.00992539]
+[0.00608939 0.0063894  0.00533386 0.98834747]
+```
 
 
 ### [Classification](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/Classification.py)
