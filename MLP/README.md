@@ -17,19 +17,20 @@ network.train(epoch_number=2000)
 
 #### Output
 * Training and testing function approximation
-| ![ApproximationTrainingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationTrainingFunction.png) | ![ApproximationTestingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationTestingFunction.png) |
+Example plots:
+![ApproximationTrainingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationTrainingFunction.png) 
+![ApproximationTestingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationTestingFunction.png) 
 
-* Mean square error plot for training data
+* Mean square error plot for training and testing data
 Example plot:
-![ApproximationPlot.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationPlot.png)
+![ApproximationErrorForTraining.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationErrorForTraining.png)
+![ApproximationErrorForTesting.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/ApproximationErrorForTesting.png)
 
-* Output data on over-trained network
-For input:
+* Error for training and testing data:
+Example values:
 ```text
-1 0 0 0
-0 1 0 0
-0 0 1 0
-0 0 0 1
+Error for training data:  0.10014346160610355
+Error for testing data:  [0.05365087]
 ```
 
 ### [Classification](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/Classification.py)
