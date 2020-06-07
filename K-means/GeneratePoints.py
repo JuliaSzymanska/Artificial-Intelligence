@@ -2,29 +2,29 @@ from shapely.geometry import Polygon, Point
 import random
 
 
-def generator(poly, numberOfRandomPoints):
+def generator(poly, number_of_random_points):
     minx, miny, maxx, maxy = poly.bounds
-    listOfPoints = []
-    for i in range(numberOfRandomPoints):
+    list_of_points = []
+    for i in range(number_of_random_points):
         while True:
             p = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
             if poly.contains(p):
-                listOfPoints.append(p)
+                list_of_points.append(p)
                 break
-    return listOfPoints
+    return list_of_points
 
 
-def findPoints():
-    numberOfPoints = int(input("Ile punktow bedzie posiadac figura? "))
+def find_points():
+    number_of_points = int(input("How many vertices will the figure have? "))
     points = []
-    for i in range(0, numberOfPoints):
-        x, y = input("Podaj x i y punktu: ").split()
+    for i in range(0, number_of_points):
+        x, y = input("Give x and y vertex: ").split()
         points.append([])
         points[i].append(float(x))
         points[i].append(float(y))
     p = Polygon(points)
-    numberOfRandomPoints = input("Ile losowych punktow wygenerowac?")
-    randomPoints = generator(p, int(numberOfRandomPoints))
-    individual_points = [(pt.x, pt.y) for pt in randomPoints]
+    number_of_random_points = input("How many random points to generate?")
+    random_points = generator(p, int(number_of_random_points))
+    individual_points = [(pt.x, pt.y) for pt in random_points]
     with open("RandomPoints.txt", 'w') as f:
         f.writelines(','.join(str(j) for j in i) + '\n' for i in individual_points)
