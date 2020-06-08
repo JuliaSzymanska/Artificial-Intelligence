@@ -19,8 +19,7 @@ SOM.train(20)
 ```
 
 #### Input
-Example input data plot
-![KohonenMapBefore.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png)
+Example input data plot:
 
 <p align="center">
   <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png" width="640">
@@ -30,7 +29,10 @@ Example input data plot
 
 #### Output
 * Example output data plot:
-![KohonenMapAfter.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapAfter.png) 
+
+<p align="center">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapAfter.png" width="640">
+</p>
 
 * Quantization error
 Example quantization error plot:
