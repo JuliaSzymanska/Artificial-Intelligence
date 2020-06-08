@@ -17,6 +17,7 @@ network.train(epoch_number=2000)
 
 #### Output
 * Training and testing function approximation
+
 Example plots:
 <table>
   <tr>
@@ -26,6 +27,7 @@ Example plots:
  </table>
  
 * Mean square error plot for training and testing data
+
 Example plot:
 <table>
   <tr>
@@ -35,6 +37,7 @@ Example plot:
  </table>
  
 * Error for training and testing data:
+
 Example values:
 ```text
 Error for training data:  0.10014346160610355
@@ -57,12 +60,14 @@ network.train(epoch_number=2000)
 
 #### Output
 * Mean square error plot
+
 Example plot:
 <p align="center">
   <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ClassificationPlot.png" width="640">
 </p>
 
 * Output data on over-trained network
+
 For input:
 ```text
 1 0 0 0
@@ -70,6 +75,7 @@ For input:
 0 0 1 0
 0 0 0 1
 ```
+
 Example results:
 ```text
 [0.98646489 0.00998248 0.00769733 0.00780114]

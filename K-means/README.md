@@ -16,7 +16,9 @@ Means.train()
 ```
 
 #### Output
-* Example plots for data before and after training
+* Plots for data before and after training
+
+Example plots:
 <table cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/K-means/.readme/KMeansBefore.png" width="640"></td>
@@ -25,6 +27,7 @@ Means.train()
  </table>
 
 * Quantization error
+
 Example quantization error plot:
 
 <p align="center">
@@ -32,11 +35,14 @@ Example quantization error plot:
 </p>
 
 * Number of epochs to achieve center stabilization
+
+Example number:
 ```text
 Number of epoch:  22
 ```
 
 * Value of mean square error for last epoch
+
 Example error:
 ```text
 Final mean square error:  0.08222274965956247

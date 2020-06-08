@@ -19,7 +19,9 @@ SOM.train(20)
 ```
 
 #### Output
-* Example plots for data before and after training
+* Plots for data before and after training
+
+Example plots:
 <table cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png" width="640"></td>
@@ -28,6 +30,7 @@ SOM.train(20)
  </table>
 
 * Quantization error
+
 Example quantization error plot:
 
 <p align="center">
@@ -51,7 +54,9 @@ SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="Data/randomPoints
 SOM.train(20)
 ```
 #### Output
-* Example plots for data before and after training
+* Plots for data before and after training
+
+Example plots:
 <table cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/NeuralGasBefore.png" width="640"></td>
@@ -59,7 +64,8 @@ SOM.train(20)
   </tr>
  </table>
 
-* Quantization error
+* Quantization error plot
+
 Example quantization error plot:
 <p align="center">
   <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/NeuralGasError.png" width="640">
