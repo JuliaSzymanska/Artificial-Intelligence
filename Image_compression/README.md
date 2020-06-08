@@ -24,20 +24,20 @@ Example compression:
 
 <table  cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td>Original colorful image</td>
-    <td>Compressed colorful image</td>
+    <td align="centre">Original colorful image</td>
+    <td align="centre">Compressed colorful image</td>
   </tr>
   <tr>
-    <td><img src="screenshots/Screenshot_1582745092.png" width=270 height=640></td>
-    <td><img src="screenshots/Screenshot_1582745125.png" width=270 height=640></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/Data/Colorful.jpg" width=270 height=640></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/.readme/CompressedColorful.jpeg" width=270 height=640></td>
   </tr>
   <tr>
-    <td>Original black and white image</td>
-    <td>Compressed black and white image</td>
+    <td align="centre">Original black and white image</td>
+    <td align="centre">Compressed black and white image</td>
   </tr>
   <tr>
-    <td><img src="screenshots/Screenshot_1582745092.png" width=270 height=640></td>
-    <td><img src="screenshots/Screenshot_1582745125.png" width=270 height=640></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/Data/BlackAndWhite.jpg" width=270 height=640></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/.readme/CompressedBlackAndWhite.jpeg" width=270 height=640></td>
   </tr>
  
  </table>
