@@ -27,10 +27,10 @@ Example plots:
  
 * Mean square error plot for training and testing data
 Example plot:
-<table cellpadding="0" cellspacing="0" border="0">
+<table>
   <tr>
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTraining.png" width="480"></td>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/ApproximationErrorForTesting.png" width="480"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTesting.png" width="480"></td>
   </tr>
  </table>
  
