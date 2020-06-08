@@ -8,7 +8,7 @@ learning_coeff = 0.02
 momentum_coeff = 0.2
 
 
-class NeuralNetwork(object):
+class RBF(object):
     def __init__(self, number_of_radial, number_of_linear, input_data_file, is_bias=0, is_derivative=0):
         np.random.seed(0)
         self.is_derivative = is_derivative
@@ -141,15 +141,15 @@ class NeuralNetwork(object):
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
-            error_test_data_plot.append(self.test_network("approximation_test.txt", False))
-            print(epoch, "  ", self.epoch_error)
-        self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
+            error_test_data_plot.append(self.test_network("Data/approximation_test.txt", False))
+        print("Mean square error for last epoch: ", self.epoch_error)
+        self.plot_uni_graph("Mean square error for test data", np.arange(0, epoch_count, 1),
                             error_test_data_plot,
-                            "Epoki",
-                            "Wartość błędu")
-        self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
-                            "Wartość błędu")
-        self.test_network("approximation_test.txt", True)
+                            "Epoch",
+                            "Error value")
+        self.plot_uni_graph("Mean square error", self.epoch_for_error, self.error_for_epoch, "Epoch",
+                            "Error value")
+        self.test_network("Data/approximation_test.txt", True)
 
     def file_input(self, file_name):
         with open(file_name, "r") as f:
@@ -170,7 +170,7 @@ class NeuralNetwork(object):
 
     def plot_uni_graph_2_functions(self, title, x_val, y_val, x_label, y_label, x_val_1, y_val_1, function):
         plt.plot(x_val, y_val, 'ro', markersize=1, label=function)
-        plt.plot(x_val_1, y_val_1, 'bo', markersize=1, label='Aproksymacja funkcji')
+        plt.plot(x_val_1, y_val_1, 'bo', markersize=1, label='Approximation of functions')
         plt.title(title)
         plt.legend()
         plt.xlabel(x_label)
@@ -188,12 +188,12 @@ class NeuralNetwork(object):
             err += (test_output[i] - expected_data[i]) ** 2
         err /= 2
         if is_graph:
-            self.plot_uni_graph_2_functions("Przebieg funkcji testowej oraz jej aproksymacji", test_data,
+            self.plot_uni_graph_2_functions("Testing function and its approximation", test_data,
                                             expected_data, "X",
-                                            "Y", test_data, test_output, "Funkcja testowa")
+                                            "Y", test_data, test_output, "Testing function")
         return (err / len(test_output))
 
 
-NeuNet = NeuralNetwork(number_of_radial=30, number_of_linear=1, input_data_file="approximation_1.txt", is_bias=1,
-                       is_derivative=1)
-NeuNet.train(50)
+network = RBF(number_of_radial=30, number_of_linear=1, input_data_file="Data/approximation_1.txt", is_bias=1,
+              is_derivative=1)
+network.train(50)

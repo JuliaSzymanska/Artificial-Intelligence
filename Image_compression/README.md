@@ -25,15 +25,15 @@ Example compression:
 <table  cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td><p align="center">Original colorful image</p></td>
-    <td><p>Compressed colorful image</p></td>
+    <td><p align="center">Compressed colorful image</p></td>
   </tr>
   <tr>
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/Data/Colorful.jpg" width="640"></td>
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/.readme/CompressedColorful.jpeg" width="640"></td>
   </tr>
     <tr>
-    <td><p>Original black and white image</p></td>
-    <td><p>Compressed black and white image</p></td>
+    <td><p align="center">Original black and white image</p></td>
+    <td><p align="center">Compressed black and white image</p></td>
   </tr>
   <tr>
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/Data/BlackAndWhite.jpg" width="640"></td>

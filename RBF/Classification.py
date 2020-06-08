@@ -9,7 +9,7 @@ learning_coeff = 0.1
 momentum_coeff = 0.2
 
 
-class NeuralNetwork(object):
+class Classification(object):
     def __init__(self, number_of_radial, number_of_linear, number_of_class, input_data_file, is_bias=0,
                  is_derivative=0):
         np.random.seed(0)
@@ -156,18 +156,18 @@ class NeuralNetwork(object):
             self.epoch_error /= self.input_data.shape[0]
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
-            error_test_data_plot.append(self.test_network("classification_test.txt", False))
-            print(epoch, "  ", self.epoch_error)
-        print("Tablica pomylek:\n", confusion_matrix)
-        self.plot_number_of_classifications("Klasyfikacja", expected_amount_of_obj_in_classes,
+            error_test_data_plot.append(self.test_network("Data/classification_test.txt", False))
+        print("Mean square error for last epoch: ", self.epoch_error)
+        print("Confusion matrix for training data:\n", confusion_matrix)
+        self.plot_number_of_classifications("Classification", expected_amount_of_obj_in_classes,
                                             assigned_amount_of_obj_in_classes, "Epoch", "Number")
-        self.plot_uni_graph("Błąd średniokwadratowy dla danych testowych", np.arange(0, epoch_count, 1),
+        self.plot_uni_graph("Mean square error for testing data", np.arange(0, epoch_count, 1),
                             error_test_data_plot,
-                            "Epoki",
-                            "Wartość błędu")
-        self.plot_uni_graph("Błąd średniokwadratowy", self.epoch_for_error, self.error_for_epoch, "Epoki",
-                            "Wartość błędu")
-        print("Blad dla danych testowych: ", self.test_network("classification_test.txt", True))
+                            "Epoch",
+                            "Error value")
+        self.plot_uni_graph("Mean square error for training data", self.epoch_for_error, self.error_for_epoch, "Epoch",
+                            "Error value")
+        print("Error for testing data: ", self.test_network("Data/classification_test.txt", True))
 
     def file_input(self, file_name):
         with open(file_name, "r") as f:
@@ -199,17 +199,8 @@ class NeuralNetwork(object):
         plt.show()
 
     def plot_uni_graph(self, title, x_val, y_val, x_label, y_label):
-        plt.plot(x_val, y_val, 'r', markersize=3)
+        plt.plot(x_val, y_val, 'ro', markersize=3)
         plt.title(title)
-        plt.xlabel(x_label)
-        plt.ylabel(y_label)
-        plt.show()
-
-    def plot_uni_graph_2_functions(self, title, x_val, y_val, x_label, y_label, x_val_1, y_val_1, function):
-        plt.plot(x_val, y_val, 'ro', markersize=1, label=function)
-        plt.plot(x_val_1, y_val_1, 'bo', markersize=1, label='Aproksymacja funkcji')
-        plt.title(title)
-        plt.legend()
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.show()
@@ -230,10 +221,10 @@ class NeuralNetwork(object):
             err += (test_output[i] - expected_data[i]) ** 2
         err /= 2
         if is_last:
-            print("Tablica pomylek dla daynch testowych:\n", confusion_matrix)
+            print("Confusion matrix for testing data:\n", confusion_matrix)
         return err / len(test_output)
 
 
-NeuNet = NeuralNetwork(number_of_radial=10, number_of_linear=1, number_of_class=3,
-                       input_data_file="classification_train.txt", is_bias=1, is_derivative=1)
-NeuNet.train(100)
+network = Classification(number_of_radial=10, number_of_linear=1, number_of_class=3,
+                         input_data_file="Data/classification_train.txt", is_bias=1, is_derivative=1)
+network.train(100)

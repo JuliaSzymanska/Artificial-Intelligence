@@ -111,7 +111,7 @@ class NeuralNetworkApproximation(object):
                                         self.expected_data, "X", "Y", input_data_plot, output_data_plot,
                                         "Training function")
         print("Error for training data: ", self.error_for_epoch[-1])
-        print("Error for testing data: ", network.test_network("Approximation_data_test.txt", True))
+        print("Error for testing data: ", self.test_network("Approximation_data_test.txt", True))
 
     def file_input(self, file_name):
         with open(file_name) as f:
