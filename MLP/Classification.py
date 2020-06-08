@@ -122,8 +122,3 @@ class NeuralNetwork(object):
         plt.ylabel("Square error")
         plt.xlabel("Epoch")
         plt.show()
-
-
-network = NeuralNetwork(number_of_input=4, number_of_hidden=3, number_of_output=4, input_data_file="transformation_data.txt",
-                        expected_data_file="transformation_data.txt", is_bias=1)
-network.train(epoch_number=2000)

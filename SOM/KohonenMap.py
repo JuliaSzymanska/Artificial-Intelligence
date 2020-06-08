@@ -173,7 +173,7 @@ class SelfOrganizingMap(object):
 
 
 GeneratePoints.find_points()
-SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="RandomPoints.txt", radius=0.5, alpha=0.5, gaussian=0)
+SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="randomPoints.txt", radius=0.5, alpha=0.5, gaussian=0)
 SOM.train(20)
 SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="testData.txt", radius=0.5, alpha=0.5, gaussian=0)
 SOM.train(20)

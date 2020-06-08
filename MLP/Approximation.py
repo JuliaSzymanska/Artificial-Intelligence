@@ -174,9 +174,3 @@ class NeuralNetworkApproximation(object):
                                             test_data[:, 1], "X",
                                             "Y", test_data[:, 0], test_output, "Testing function")
         return (err / len(test_output))
-
-
-network = NeuralNetworkApproximation(number_of_input=1, number_of_hidden=10, number_of_output=1,
-                                     input_data_file="Approximation_data_1.txt", is_bias=1)
-network.train(epoch_number=2000)
-

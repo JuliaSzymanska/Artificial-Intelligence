@@ -26,5 +26,5 @@ def find_points():
     number_of_random_points = input("How many random points to generate?")
     random_points = generator(p, int(number_of_random_points))
     individual_points = [(pt.x, pt.y) for pt in random_points]
-    with open("RandomPoints.txt", 'w') as f:
+    with open("randomPoints.txt", 'w') as f:
         f.writelines(','.join(str(j) for j in i) + '\n' for i in individual_points)
