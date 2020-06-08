@@ -1,4 +1,4 @@
-## SOM
+## SOM - Self-organizing map
 The network implementing the classic self-organizing map consists of a set of neurons. Neurons compete with each other for the right to represent the input pattern, which means that the one who responds most strongly is ultimately accepted as a representative of the pattern. The neuron transmission function is a function of the distance between the input vector and the weight vector, and a given neuron can be interpreted as a point / vector in the space of input standards. Finding the optimal distribution of neurons in space is possible in two ways:
 
 ### [Kohonen map](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/KohonenMap.py)
@@ -21,6 +21,12 @@ SOM.train(20)
 #### Input
 Example input data plot
 ![KohonenMapBefore.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png)
+
+<p align="center">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png" width="640">
+</p>
+
+
 
 #### Output
 * Example output data plot:
