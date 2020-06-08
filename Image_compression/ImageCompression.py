@@ -5,7 +5,7 @@ from PIL import Image
 from numpy import asarray
 
 
-class self_organizing_map(object):
+class ImageCompression(object):
     def __init__(self, number_of_neurons, radius, alpha, gaussian, input_file, output_file):
         image = Image.open(input_file)
         self.output_file = output_file
@@ -143,6 +143,6 @@ class self_organizing_map(object):
         print(self.error)
 
 
-SOM = self_organizing_map(number_of_neurons=16, radius=0.5, alpha=0.5,
-                          gaussian=0, input_file="Colorful.jpg", output_file="CompressedColorful.jpeg")
-SOM.train(1)
+compression = ImageCompression(number_of_neurons=16, radius=0.5, alpha=0.5,
+                       gaussian=0, input_file="Data/Colorful.jpg", output_file=".readme/CompressedColorful.jpeg")
+compression.train(1)
