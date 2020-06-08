@@ -18,10 +18,10 @@ network.train(epoch_number=2000)
 #### Output
 * Training and testing function approximation
 Example plots:
-<table cellpadding="0" cellspacing="0" border="0">
+<table>
   <tr>
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTrainingFunction.png" width="480"></td>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/ApproximationTestingFunction.png" width="480"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTestingFunction.png" width="480"></td>
   </tr>
  </table>
  
