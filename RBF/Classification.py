@@ -223,8 +223,3 @@ class Classification(object):
         if is_last:
             print("Confusion matrix for testing data:\n", confusion_matrix)
         return err / len(test_output)
-
-
-network = Classification(number_of_radial=10, number_of_linear=1, number_of_class=3,
-                         input_data_file="Data/classification_train.txt", is_bias=1, is_derivative=1)
-network.train(100)

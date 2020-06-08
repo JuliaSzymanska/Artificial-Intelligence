@@ -141,8 +141,3 @@ class ImageCompression(object):
             self.calculate_error()
         self.save_image()
         print(self.error)
-
-
-compression = ImageCompression(number_of_neurons=16, radius=0.5, alpha=0.5,
-                       gaussian=0, input_file="Data/Colorful.jpg", output_file=".readme/CompressedColorful.jpeg")
-compression.train(1)

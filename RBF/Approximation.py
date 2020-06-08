@@ -143,11 +143,11 @@ class RBF(object):
             self.error_for_epoch.append(self.epoch_error)
             error_test_data_plot.append(self.test_network("Data/approximation_test.txt", False))
         print("Mean square error for last epoch: ", self.epoch_error)
-        self.plot_uni_graph("Mean square error for test data", np.arange(0, epoch_count, 1),
+        self.plot_uni_graph("Mean square error for testing data", np.arange(0, epoch_count, 1),
                             error_test_data_plot,
                             "Epoch",
                             "Error value")
-        self.plot_uni_graph("Mean square error", self.epoch_for_error, self.error_for_epoch, "Epoch",
+        self.plot_uni_graph("Mean square error for training data", self.epoch_for_error, self.error_for_epoch, "Epoch",
                             "Error value")
         self.test_network("Data/approximation_test.txt", True)
 
@@ -162,7 +162,7 @@ class RBF(object):
         return np.asarray(input_arr), np.asarray(expected_val)
 
     def plot_uni_graph(self, title, x_val, y_val, x_label, y_label):
-        plt.plot(x_val, y_val, 'r', markersize=3)
+        plt.plot(x_val, y_val, 'ro', markersize=3)
         plt.title(title)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
@@ -192,8 +192,3 @@ class RBF(object):
                                             expected_data, "X",
                                             "Y", test_data, test_output, "Testing function")
         return (err / len(test_output))
-
-
-network = RBF(number_of_radial=30, number_of_linear=1, input_data_file="Data/approximation_1.txt", is_bias=1,
-              is_derivative=1)
-network.train(50)

@@ -134,10 +134,3 @@ class KMeans(object):
         plt.plot(epoch_range, self.error, 'ro', markersize=5)
         plt.title("Quantization error")
         plt.show()
-
-
-# GeneratePoints.find_points()
-Means = KMeans(k=10, input_data_file="Data/RandomPoints.txt", epsilon=0.0001, rand_number=5)
-Means.train()
-
-
