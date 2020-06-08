@@ -11,7 +11,7 @@ import GeneratePoints
 
 
 class SelfOrganizingMap(object):
-    def __init__(self, number_of_neurons, input_data_file, radius, alpha, gaussian):
+    def __init__(self, number_of_neurons, input_data_file, radius, alpha):
         self.radius = radius
         self.max_radius = radius
         self.min_radius = 0000.1
@@ -21,7 +21,6 @@ class SelfOrganizingMap(object):
         self.min_alpha = 0000.1
         self.p_min = 0.75
         np.random.seed(20)
-        self.gaussian = gaussian
         self.number_of_neurons = number_of_neurons
         self.input_data = self.file_input(input_data_file)
         self.neuron_weights = np.random.normal(np.mean(self.input_data), np.std(self.input_data),
@@ -147,8 +146,8 @@ class SelfOrganizingMap(object):
         plt.show()
 
 
-GeneratePoints.find_points()
-SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="randomPoints.txt", radius=0.5, alpha=0.5, gaussian=0)
-SOM.train(20)
-SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="testData.txt", radius=0.5, alpha=0.5, gaussian=0)
-SOM.train(20)
+# GeneratePoints.find_points()
+SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="randomPoints.txt", radius=0.5, alpha=0.5)
+SOM.train(50)
+# SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="testData.txt", radius=0.5, alpha=0.5)
+# SOM.train(20)
