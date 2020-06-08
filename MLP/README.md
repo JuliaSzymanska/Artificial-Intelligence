@@ -20,8 +20,8 @@ network.train(epoch_number=2000)
 Example plots:
 <table cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTrainingFunction.png" width="640"></td>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/ApproximationTestingFunction.png" width="640"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTrainingFunction.png" width="480"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/ApproximationTestingFunction.png" width="480"></td>
   </tr>
  </table>
  
@@ -29,8 +29,8 @@ Example plots:
 Example plot:
 <table cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTraining.png" width="640"></td>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/ApproximationErrorForTesting.png" width="640"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTraining.png" width="480"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/ApproximationErrorForTesting.png" width="480"></td>
   </tr>
  </table>
  
