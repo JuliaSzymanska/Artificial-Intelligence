@@ -58,7 +58,9 @@ network.train(epoch_number=2000)
 #### Output
 * Mean square error plot
 Example plot:
-![ClassificationPlot.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ClassificationPlot.png)
+<p align="center">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ClassificationPlot.png" width="640">
+</p>
 
 * Output data on over-trained network
 For input:
