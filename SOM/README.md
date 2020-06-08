@@ -18,19 +18,18 @@ SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="randomPoints.txt"
 SOM.train(20)
 ```
 
-#### Input
-Example input data plot:
-
-<p align="center">
-  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png" width="640">
-</p>
-
 #### Output
-* Example output data plot:
 
-<p align="center">
-  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapAfter.png" width="640">
-</p>
+<table>
+  <tr>
+    <td align="centre">Before</td>
+     <td align="centre">After</td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png" width="480"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapAfter.png" width="480"></td>
+  </tr>
+ </table>
 
 * Quantization error
 Example quantization error plot:
