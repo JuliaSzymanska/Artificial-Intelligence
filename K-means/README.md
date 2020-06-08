@@ -19,8 +19,8 @@ Means.train()
 * Example plots for data before and after training
 <table cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png" width="640"></td>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapAfter.png" width="640"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/K-means/.readme/KMeansBefore.png" width="640"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/K-means/.readme/KMeansAfter.png" width="640"></td>
   </tr>
  </table>
 
@@ -28,7 +28,7 @@ Means.train()
 Example quantization error plot:
 
 <p align="center">
-  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapError.png" width="640">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/K-means/.readme/KMeansError.png" width="640">
 </p>
 
 * Number of epochs to achieve center stabilization
