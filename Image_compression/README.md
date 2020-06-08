@@ -31,13 +31,4 @@ Example compression:
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/Data/Colorful.jpg" width=270 height=480></td>
     <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/.readme/CompressedColorful.jpeg" width=270 height=480></td>
   </tr>
-  <tr>
-    <td align="centre">Original black and white image</td>
-    <td align="centre">Compressed black and white image</td>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/Data/BlackAndWhite.jpg" width=270 height=480></td>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/Image_compression/.readme/CompressedBlackAndWhite.jpeg" width=270 height=480></td>
-  </tr>
- 
  </table>
