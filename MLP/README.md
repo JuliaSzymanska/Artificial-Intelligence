@@ -8,7 +8,7 @@ Implementation of a neural network with one input layer, one linear hidden layer
 * Create a network instance
 ```python
 network = NeuralNetwork(number_of_input=1, number_of_hidden=10, number_of_output=1, 
-                        input_data_file="Approximation_data_1.txt", is_bias=1)
+                        input_data_file="Data/Approximation_data_1.txt", is_bias=1)
 ```
 * Train network
 ```python
@@ -47,8 +47,8 @@ Implementation of a neural network with input layer with 1 to 4 neurons, one sig
 #### USAGE
 * Create a network instance
 ```python
-network = NeuralNetworkApproximation(number_of_input=4, number_of_hidden=3, number_of_output=4, input_data_file="transformation.txt",
-                        expected_data_file="transformation.txt", is_bias=1)
+network = NeuralNetworkApproximation(number_of_input=4, number_of_hidden=3, number_of_output=4, input_data_file="Data/transformation.txt",
+                        expected_data_file="Data/transformation.txt", is_bias=1)
 ```
 * Train network
 ```python

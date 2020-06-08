@@ -29,7 +29,7 @@ class SelfOrganizingMap(object):
         self.winner = -1
         self.neighborhood = []
         self.winner_distance = []
-        self.test_data = self.file_input("testData.txt")
+        self.test_data = self.file_input("Data/testData.txt")
         self.error = []
         self.potential = np.ones(self.number_of_neurons)
         self.activation = np.ones(self.number_of_neurons)
@@ -144,10 +144,3 @@ class SelfOrganizingMap(object):
 
         ani = animation.FuncAnimation(fig, animate, len(self.animation_plots), interval=1, repeat=False)
         plt.show()
-
-
-# GeneratePoints.find_points()
-SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="randomPoints.txt", radius=0.5, alpha=0.5)
-SOM.train(50)
-# SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="testData.txt", radius=0.5, alpha=0.5)
-# SOM.train(20)

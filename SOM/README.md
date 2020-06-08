@@ -11,7 +11,7 @@ GeneratePoints.find_points()
 ```
 * Create a network instance
 ```python
-SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="randomPoints.txt", radius=0.5, alpha=0.5, gaussian=0)
+SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="Data/randomPoints.txt", radius=0.5, alpha=0.5, gaussian=0)
 ```
 * Train network
 ```python
@@ -44,7 +44,7 @@ GeneratePoints.find_points()
 ```
 * Create a network instance
 ```python
-SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="randomPoints.txt", radius=0.5, alpha=0.5)
+SOM = SelfOrganizingMap(number_of_neurons=20, input_data_file="Data/randomPoints.txt", radius=0.5, alpha=0.5)
 ```
 * Train network
 ```python

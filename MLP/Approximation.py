@@ -100,7 +100,7 @@ class NeuralNetworkApproximation(object):
             self.epoch_error /= len(self.input_data)
             self.epoch_for_error.append(epoch)
             self.error_for_epoch.append(self.epoch_error)
-            error_test_data_plot.append(self.test_network("Approximation_data_test.txt"))
+            error_test_data_plot.append(self.test_network("Data/Approximation_data_test.txt"))
         self.plot_uni_graph("Mean square error for test data", np.arange(0, epoch_number, 1),
                             error_test_data_plot,
                             "Epoch",
