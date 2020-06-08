@@ -20,3 +20,6 @@ Neural networks learning improvement using the k-means clustering algorithm.
 This task consists of two parts, each of which presents one example of how to use the neural network with radial base functions(RBF):
 * [Approximation](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/Approximation.py)
 * [Classification](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/Classification.py)
+
+## License
+[Apache License 2.0](https://github.com/JuliaSzymanska/Sudoku_Game/blob/master/LICENSE)
