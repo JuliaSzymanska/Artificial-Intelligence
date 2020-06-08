@@ -18,14 +18,22 @@ network.train(epoch_number=2000)
 #### Output
 * Training and testing function approximation
 Example plots:
-![ApproximationTrainingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTrainingFunction.png) 
-![ApproximationTestingFunction.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTestingFunction.png) 
-
+<table cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTrainingFunction.png" width="640"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/ApproximationTestingFunction.png" width="640"></td>
+  </tr>
+ </table>
+ 
 * Mean square error plot for training and testing data
 Example plot:
-![ApproximationErrorForTraining.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTraining.png)
-![ApproximationErrorForTesting.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTesting.png)
-
+<table cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTraining.png" width="640"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/ApproximationErrorForTesting.png" width="640"></td>
+  </tr>
+ </table>
+ 
 * Error for training and testing data:
 Example values:
 ```text
