@@ -22,8 +22,8 @@ SOM.train(20)
 
 <table cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png" width="540"></td>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapAfter.png" width="540"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png" width="640"></td>
+    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapAfter.png" width="640"></td>
   </tr>
  </table>
 
