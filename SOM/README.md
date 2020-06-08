@@ -25,8 +25,6 @@ Example input data plot:
   <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapBefore.png" width="640">
 </p>
 
-
-
 #### Output
 * Example output data plot:
 
@@ -36,7 +34,10 @@ Example input data plot:
 
 * Quantization error
 Example quantization error plot:
-![KohonenMapError.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapError.png)
+
+<p align="center">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/KohonenMapError.png" width="640">
+</p>
 
 ### [Neural gas](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/NeuralGas.py)
 The neural gas algorithm assumes the adaptation of the weights of only the winning neuron and the neurons located no further than the specified neighborhood radius. The issue of neighborhood is made by ordering neurons in series depending on the distance of their weight vectors from the given input vector. The learning coefficient is determined in this case based on the position in the series, not the actual distance.
@@ -56,12 +57,18 @@ SOM.train(20)
 ```
 #### Input
 Example input data plot
-![NeuralGasBefore.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/NeuralGasBefore.png)
+<p align="center">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/NeuralGasBefore.png" width="640">
+</p>
 
 #### Output
 * Example output data plot:
-![NeuralGasAfter.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/NeuralGasAfter.png) 
+<p align="center">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/NeuralGasAfter.png" width="640">
+</p>
 
 * Quantization error
 Example quantization error plot:
-![NeuralGasError.png](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/NeuralGasError.png)
+<p align="center">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/SOM/.readme/NeuralGasError.png" width="640">
+</p>
