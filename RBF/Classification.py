@@ -33,8 +33,8 @@ class Classification(object):
 
     def initialze_weights(self):
         input = np.copy(self.input_data)
-        SOM = neuralgas.SelfOrganizingMap(numberOfNeurons=self.number_of_radial, input_data_file=input, type=1,
-                                          radius=0.5, alpha=0.5, gaussian=0)
+        SOM = neuralgas.SelfOrganizingMap(numberOfNeurons=self.number_of_radial, input_data_file=input,
+                                          radius=0.5, alpha=0.5)
         SOM.train(50)
         self.radial_layer_weights = SOM.neuron_weights
         self.linear_layer_weights = 2 * np.random.random(

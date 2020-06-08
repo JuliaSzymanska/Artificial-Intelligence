@@ -5,9 +5,13 @@ The RBF network is a neural network with radial base functions. It consists of t
 * The second layer consists of traditional linear neurons, i.e. neurons with an identical activation function.
 
 ### [Approximation](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/Approximation.py)
-Implementation of a neural network with one input layer, one linear hidden layer, and one output layer with a sigmoidal activation function.
 
-#### USAGE
+#### Radial neuron's weights
+
+* Draw the weights values from the input data
+* Draw the weights values from the input data & change their values in backpropagation
+
+#### Usage
 
 * Create a network instance
 ```python
@@ -24,19 +28,17 @@ network.train(50)
 * Testing function approximation
 
 Example plot:
-<table>
-  <tr>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationTrainingFunction.png" width="640"></td>
-  </tr>
- </table>
+<p align="center">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/.readme/ApproximationTestFun.png" width="640">
+</p>
  
 * Mean square error plot for training and testing data
 
 Example plots:
 <table>
   <tr>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTraining.png" width="640"></td>
-    <td><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/MLP/.readme/ApproximationErrorForTesting.png" width="640"></td>
+    <td><p align="center"><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/.readme/ApproximationTrainingError.png" width="640"></p></td>
+    <td><p align="center"><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/.readme/ApproximationTestingError.png" width="640"></p></td>
   </tr>
  </table>
  
@@ -48,9 +50,13 @@ Mean square error for last epoch:  0.0956750012575332
 ```
 
 ### [Classification](https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/Classification.py)
-Implementation of a neural network with input layer with 1 to 4 neurons, one sigmoidal hidden layer, and one output layer with 3 neurons with a sigmoidal activation function.
 
-#### USAGE
+#### Radial neuron's weights
+
+* Draw the weight's values & train them by neural gas
+* Draw the weight's values & train them by neural gas & change their values in backpropagation
+
+#### Usage
 
 * Create a network instance
 ```python
@@ -68,7 +74,7 @@ network.train(100)
 
 Example plot:
 <p align="center">
-  <img src="" width="640">
+  <img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/.readme/Classification.png" width="640">
 </p>
 
 * Mean square error plots for training and testing data
@@ -76,8 +82,8 @@ Example plot:
 Example plots:
 <table cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td><p align="center"><img src="" width="640"></p></td>
-    <td><p align="center"><img src="" width="640"></p></td>
+    <td><p align="center"><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/.readme/ClassificationTrainingError.png" width="640"></p></td>
+    <td><p align="center"><img src="https://github.com/JuliaSzymanska/Artificial-Intelligence/blob/master/RBF/.readme/ClassificationTestingError.png" width="640"></p></td>
   </tr>
  </table>
 
